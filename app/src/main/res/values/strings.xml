@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Tour Guide</string>
+
+    <string-array name="occupation">
+        <item>Indonesia</item>
+        <item>Malaysia</item>
+        <item>Singapore</item>
+    </string-array>
+</resources>
