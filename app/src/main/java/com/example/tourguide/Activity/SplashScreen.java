@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.example.tourguide.MapsActivity;
 import com.example.tourguide.R;
 
 public class SplashScreen extends AppCompatActivity {
@@ -17,7 +18,7 @@ public class SplashScreen extends AppCompatActivity {
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
-                Intent intent = new Intent(SplashScreen.this,RegisterActivity.class);
+                Intent intent = new Intent(SplashScreen.this, LandingMainActivity.class);
 
                 startActivity(intent);
                 finish();
