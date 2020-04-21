@@ -18,6 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/moto"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -27,14 +28,7 @@
         android:textColor="@color/cardview_dark_background"
         android:text="Fee doesnt buy anithing, but it taken everithing "/>
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/gbutton"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logo"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="250dp"/>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/login"
@@ -42,7 +36,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gbutton">
+        app:layout_constraintBottom_toTopOf="@id/btnregis">
         <TextView
             android:id="@+id/text1"
             android:layout_width="wrap_content"
@@ -72,7 +66,8 @@
             app:layout_constraintTop_toTopOf="@id/login" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        app:backgroundTint="@color/my_app_background_color"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

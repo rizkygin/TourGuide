@@ -1,6 +1,6 @@
-package com.example.tourguide.Adapter;
+package com.example.tourguide.model;
 
-public class Recommended {
+public class DataMerchant {
     private int id;
     private int category_id;
     private int city_id;
@@ -11,16 +11,6 @@ public class Recommended {
     private String latitude;
     private String longitude;
     private int status;
-    private boolean recomended;
-
-    public Recommended() {
-    }
-
-    public Recommended(String name, String address, int status) {
-        this.name = name;
-        this.address = address;
-        this.status = status;
-    }
 
     public int getId() {
         return id;
@@ -100,13 +90,5 @@ public class Recommended {
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public boolean isRecomended() {
-        return recomended;
-    }
-
-    public void setRecomended(boolean recomended) {
-        this.recomended = recomended;
     }
 }

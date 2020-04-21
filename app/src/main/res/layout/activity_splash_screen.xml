@@ -6,4 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".Activity.SplashScreen">
 
+    <ImageView
+        android:id="@+id/logoSplashScreen"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/tourguidelogo"
+        android:layout_width="250dp"
+        android:layout_height="250dp"/>
+    <TextView
+        android:textSize="20dp"
+        android:textColor="@android:color/black"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logoSplashScreen"
+        android:textStyle="bold"
+        android:text="TRAVEL GUIDE AND REWARD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

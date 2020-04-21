@@ -8,18 +8,20 @@
             android:id="@+id/redeem"
             android:icon="@drawable/ic_monetization_on_black_24dp"
             android:title="35 Point" />
-        <item
-            android:id="@+id/edit_account"
-            android:icon="@drawable/edit"
-            android:title="Edit Account" />
     </group>
 
     <item android:title="Action">
         <menu>
-            <item
-                android:id="@+id/logout_action"
-                android:icon="@drawable/logout"
-                android:title="Logout" />
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/edit_account"
+                    android:icon="@drawable/edit"
+                    android:title="Edit Account" />
+                <item
+                    android:id="@+id/logout_action"
+                    android:icon="@drawable/logout"
+                    android:title="Logout" />
+            </group>
         </menu>
     </item>
 

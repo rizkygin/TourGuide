@@ -15,6 +15,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ProgressBar
+            android:id="@+id/progressbar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
         <TextView
             android:id="@+id/signuptext"
             android:layout_marginTop="50dp"
@@ -42,6 +50,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:inputType="textEmailAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -93,6 +102,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:inputType="textPostalAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -112,6 +122,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -154,6 +165,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:inputType="textPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -162,16 +174,15 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSignUp"
             style="@style/Widget.MaterialComponents.Button"
-            app:cornerRadius="15dp"
-            app:backgroundTint="@color/my_app_secondary_color"
+            android:layout_width="211dp"
+            android:layout_height="78dp"
+            android:text="Sign Up"
             android:textColor="@color/my_app_background_color"
-            app:layout_constraintTop_toBottomOf="@id/password"
+            app:cornerRadius="15dp"
             app:layout_constraintBottom_toTopOf="@id/tvacc"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:layout_width="211dp"
-            android:layout_height="78dp"
-            android:text="Sign Up"/>
+            app:layout_constraintTop_toBottomOf="@id/password" />
         <TextView
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"

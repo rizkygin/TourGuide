@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    style="@style/Widget.MaterialComponents.CardView"
+    android:layout_height="wrap_content"
+    android:background="@drawable/voucher_bg"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/mtrl_card_spacing"
+        android:layout_marginTop="@dimen/mtrl_card_spacing">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/nameStore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="10dp"
+                android:text="Hotel Ciputra"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/voucherNominal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nameStore"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:text="Rp.15,000"
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="35dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btnGetVoucher"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:text="Claimed"
+                android:textColor="@android:color/holo_green_light" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGetVoucher"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="83dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:text="GET"
+                android:textColor="@color/my_app_background_color" />
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+
+</RelativeLayout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?><!--<shape xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--    <solid-->
+<!--        android:color="#FBF4F1"/>-->
+<!--    <stroke-->
+<!--            -->
+<!--        />-->
+<!--</shape>-->
+
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid android:color="#FBF4F1" />
+    <stroke
+        android:width="5dp"
+        android:color="#E9ACAF"
+        android:dashWidth="20px"
+        android:dashGap="10px" />
+</shape>

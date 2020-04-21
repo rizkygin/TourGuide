@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="my_app_primary_color">#F2F8FF</color>
-    <color name="my_app_secondary_color">#518895</color>
+    <color name="my_app_primary_color">#08CDB4</color>
+    <color name="my_app_secondary_color">#F2F8FF</color>
     <color name="my_app_background_color">#FBFDFF</color>
     <color name="my_app_error_color">#B50027</color>
 
 
     <color name="my_app_primary_variant_color">#AADAFF</color>
-    <color name="my_app_surface_color">#596B0E</color>
+    <color name="my_app_surface_color">#F2F8FF</color>
     <color name="my_app_secondary_variant_color">#263F45</color>
     <color name="my_app_color_on_primary">#263F45</color>
     <color name="my_app_color_on_secondary">#263F45</color>
