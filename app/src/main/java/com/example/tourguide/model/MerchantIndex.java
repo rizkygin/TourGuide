@@ -1,13 +1,14 @@
 package com.example.tourguide.model;
 
 import com.example.tourguide.Adapter.Recommended;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class MerchantIndex {
+    @SerializedName("data")
     private List<Recommended> data;
 
-    private String links;
 
     public List<Recommended> getData() {
         return data;
@@ -17,11 +18,5 @@ public class MerchantIndex {
         this.data = data;
     }
 
-    public String getLinks() {
-        return links;
-    }
 
-    public void setLinks(String links) {
-        this.links = links;
-    }
 }

@@ -84,7 +84,7 @@ public class SignInActivity extends AppCompatActivity {
 //        .build();
 
     Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://10.0.2.2/api/")
+            .baseUrl("https://tourgr.id/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
     UserClient userClient = retrofit.create(UserClient.class);

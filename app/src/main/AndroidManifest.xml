@@ -40,6 +40,8 @@
             android:label="@string/title_activity_landing_main"
             android:theme="@style/Theme.MyApp.NoActionBar">
 
+
+
         </activity>
         <activity android:name=".Activity.SignInActivity" />
         <!--
@@ -52,13 +54,15 @@
         -->
         <activity android:name=".Activity.ScanActivity" />
         <activity android:name=".Activity.RegisterActivity">
+
+        </activity>
+        <activity android:name=".Activity.LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.LoginActivity" />
         <activity android:name=".Activity.MainActivity" />
         <activity android:name=".Activity.SplashScreen">
         </activity>

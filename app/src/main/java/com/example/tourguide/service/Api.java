@@ -10,7 +10,7 @@ public class Api {
         // change your base URL
         if (retrofit==null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://10.0.2.2/api/")
+                    .baseUrl("https://tourgr.id/api/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }

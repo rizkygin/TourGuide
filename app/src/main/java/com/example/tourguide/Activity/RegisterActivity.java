@@ -44,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
     private ProgressBar progressbar;
 
     Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://10.0.2.2/api/")
+            .baseUrl("https://tourgr.id/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 

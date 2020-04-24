@@ -2,7 +2,9 @@ package com.example.tourguide.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -21,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView login;
     MaterialButton regis;
 
+    String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +31,12 @@ public class LoginActivity extends AppCompatActivity {
         login = findViewById(R.id.btnlogin);
         regis = findViewById(R.id.btnregis);
 
+        SharedPreferences preferences = LoginActivity.this.getSharedPreferences("UserData", Context.MODE_PRIVATE);
+        token = preferences.getString("token",null);
+        if(token != null){
+            Intent intent = new Intent(LoginActivity.this, LandingMainActivity.class);
+            startActivity(intent);
+        }
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
