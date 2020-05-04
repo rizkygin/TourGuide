@@ -8,6 +8,7 @@ import com.example.tourguide.Adapter.RecyclerViewVoucherAdapter;
 import com.example.tourguide.Adapter.Voucher;
 import com.example.tourguide.R;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +40,11 @@ public class RedeemActivity extends AppCompatActivity {
         mList.add(new Voucher("Kikuk",35000,true));
 
 
+        Log.d("redeemActivity", String.valueOf(mList.size()));
+
+        recyclerView.setHasFixedSize(true);
         RecyclerViewVoucherAdapter recyclerViewVoucherAdapter = new RecyclerViewVoucherAdapter(this,mList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(RedeemActivity.this));
         recyclerView.setAdapter(recyclerViewVoucherAdapter);
     }
 }

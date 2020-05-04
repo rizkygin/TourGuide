@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -54,6 +55,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     String token;
     private GoogleMap mMap;
     List<Recommended> mList;
+    CoordinatorLayout collapse;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -68,11 +70,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
 
         recyclerView = root.findViewById(R.id.recyclerView);
-        RecyclerViewRecommendedAdapter recyclerViewRecommendedAdapter = new RecyclerViewRecommendedAdapter(getContext(), mList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(recyclerViewRecommendedAdapter);
+        collapse = root.findViewById(R.id.recomendedPlaces);
+
+
+
 
         return root;
+
 
     }
 
@@ -80,8 +84,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mList = new ArrayList<>();
-
 
         SharedPreferences preferences = getContext().getSharedPreferences("UserData", Context.MODE_PRIVATE);
 
@@ -95,25 +97,32 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onResponse(Call<MerchantIndex> call, Response<MerchantIndex> response) {
                 Log.d(TAG, response.message());
-                if (response.isSuccessful()) {
-                    Toast.makeText(getActivity(), "isSuccessful  " , Toast.LENGTH_LONG).show();
-                    assert response.body() != null;
-                    List<Recommended> list = response.body().getData();
-                    for (Recommended recommended : list) {
-                        mList.add(new Recommended(recommended.getName(), recommended.getAddress(), recommended.getStatus()));
-                    }
-                    Log.d(TAG, String.valueOf(mList));
+                if (!response.isSuccessful()) {
+                    Log.d(TAG, "Code :" + response.code());
+                    return;
+                }
+                mList = new ArrayList<>();
+                List<Recommended> list = response.body().getData();
+                for (Recommended recommended : list) {
+
+//                    Log.d(TAG, recommended.getName() + " " + recommended.getAddress() + " ");
+                    mList.add(new Recommended(recommended.getName(),recommended.getAddress(),recommended.getStatus()));
+                    mMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(recommended.getLatitude()), Double.parseDouble(recommended.getLongitude()))).title(recommended.getName())
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.bag)));
                 }
 
-                Toast.makeText(getActivity(), "No Succesfull  " , Toast.LENGTH_LONG).show();
-                Log.d(TAG, "Not Successfull");
+                RecyclerViewRecommendedAdapter recyclerViewRecommendedAdapter = new RecyclerViewRecommendedAdapter(getContext(), mList);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                recyclerView.setAdapter(recyclerViewRecommendedAdapter);
+                Log.d(TAG, "get Name :" + mList.get(1).getName());
+                Log.d(TAG, response.message() + " Code :" + response.code());
             }
 
             @Override
             public void onFailure(Call<MerchantIndex> call, Throwable t) {
                 String Message = t.getMessage();
                 Log.d(TAG + "f", Message);
-                mList.add(new Recommended("Grand Hotel Swiss Berlin", "Jalan farming, No 11,Kec.Seminyek", "1"));
+//                mList.add(new Recommended("Grand Hotel Swiss Berlin", "Jalan farming, No 11,Kec.Seminyek", "1"));
 //                Toast.makeText(SignInActivity.this,"Sorry Try Again" + emailtype + "/ " + "pass " + Message,Toast.LENGTH_LONG ).show();
 ////                Log.d("response", t.getStackTrace().toString());
                 if (t instanceof SocketTimeoutException) {
@@ -138,6 +147,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         googleMap.setTrafficEnabled(true);
         mMap = googleMap;
 
+//        mList.add(new Recommended("hello","there","0"));
+//        Log.d(TAG, String.valueOf(mList.size()));
+
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney")
@@ -146,4 +158,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
     }
+
+
 }

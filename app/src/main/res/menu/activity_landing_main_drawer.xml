@@ -7,7 +7,7 @@
         <item
             android:id="@+id/redeem"
             android:icon="@drawable/ic_monetization_on_black_24dp"
-            android:title="35 Point" />
+            android:title="Redeem Point" />
     </group>
 
     <item android:title="Action">
