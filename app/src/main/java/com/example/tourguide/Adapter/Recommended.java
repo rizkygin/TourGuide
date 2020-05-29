@@ -14,10 +14,11 @@ public class Recommended {
     public Recommended() {
     }
 
-    public Recommended(String name, String address, String status) {
+    public Recommended(String name, String address, String status, int id) {
         this.name = name;
         this.address = address;
         this.status = status;
+        this.id = id;
     }
 
     public int getId() {

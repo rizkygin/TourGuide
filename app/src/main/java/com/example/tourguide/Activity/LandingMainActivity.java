@@ -114,6 +114,10 @@ public class LandingMainActivity extends AppCompatActivity implements Navigation
                 break;
             case R.id.edit_account:
                 break;
+            case R.id.scan:
+                Intent intentScan = new Intent(this,ScanActivity.class);
+                startActivity(intentScan);
+                break;
             case R.id.logout_action:
                 break;
         }

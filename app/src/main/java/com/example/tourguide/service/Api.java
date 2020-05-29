@@ -1,5 +1,8 @@
 package com.example.tourguide.service;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -8,10 +11,14 @@ public class Api {
     public static UserClient getClient() {
 
         // change your base URL
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
         if (retrofit==null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl("https://tourgr.id/api/")
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }
         //Creating object for our interface

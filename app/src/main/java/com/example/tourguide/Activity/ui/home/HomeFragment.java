@@ -70,7 +70,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private boolean isReady = false;
     List<Recommended> mList = new ArrayList<>();
     private final List<Marker> mMarker = new ArrayList<Marker>();
-
+    double lat = 0.0;
+    double lon = 0.0;
     private ProgressBar progressBar;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -91,10 +92,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
 
-        getLocation();
+//        RecyclerViewRecommendedAdapter recyclerViewRecommendedAdapter = new RecyclerViewRecommendedAdapter(getContext(), mList);
         callApi();
         return root;
     }
+
 
 
     @Override
@@ -105,6 +107,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         token = preferences.getString("token", "");
 
         Log.d(TAG, "size mList OnCreate " + mList.size());
+        //0
         Log.d(TAG, "isReady " + isReady);
     }
 
@@ -112,18 +115,44 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
 
         Log.d(TAG, "isReady " + isReady);
+        mFusedLocationClient.getLastLocation().addOnSuccessListener(
+                new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            mLastLocation = location;
+
+
+                            lat = mLastLocation.getLatitude();
+                            lon = mLastLocation.getLongitude();
+
+                        } else {
+                            Toast.makeText(getContext(), "No location Found", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
+                }
+        );
+
+        Latlo latlo = new Latlo(lat,lon);
 
         googleMap.setTrafficEnabled(true);
         float zoomLevel = 16.0f;
         mMap = googleMap;
 
 
+        LatLng sydney = new LatLng(latlo.getLat(),latlo.getLo());
+
+        mMap.addMarker(new MarkerOptions()
+                .title("Your Position")
+                .position(sydney)
+                .icon(BitmapDescriptorFactory.defaultMarker(150)));
 //            addMarkersToMap();
 //        mList.add(new Recommended("hello","there","0"));
 //        Log.d(TAG, String.valueOf(mList.size()));
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney")
 //                .icon(null));
 
@@ -183,8 +212,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 for (Recommended recommended : list) {
                     LatLng position = new LatLng(Double.parseDouble(recommended.getLatitude()), Double.parseDouble(recommended.getLongitude()));
 
-//                    Log.d(TAG, recommended.getName() + " " + recommended.getAddress() + " ");
-                    mList.add(new Recommended(recommended.getName(), recommended.getAddress(), recommended.getStatus()));
+                    Log.d(TAG, String.valueOf(recommended.getId()));
+                    mList.add(new Recommended(recommended.getName(), recommended.getAddress(), recommended.getStatus(), recommended.getId()));
                     Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(position).title(recommended.getName())
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.shop_marker))
@@ -192,14 +221,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     mMarker.add(marker);
 
                 }
-                Log.d(TAG, "Data " + mList);
-
-
                 RecyclerViewRecommendedAdapter recyclerViewRecommendedAdapter = new RecyclerViewRecommendedAdapter(getContext(), mList);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                Log.d("testAdapter", "Context Home " + mList.get(1).getId());
+
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                 recyclerView.setAdapter(recyclerViewRecommendedAdapter);
                 progressBar.setVisibility(View.GONE);
                 Log.d(TAG, "responses :" + mList.size());
+                //30
 
             }
 
@@ -231,29 +260,25 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         isReady = true;
     }
 
-    public void getLocation() {
-        if (ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]
-                            {Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_LOCATION_PERMISSION);
-        } else {
-            mFusedLocationClient.getLastLocation().addOnSuccessListener(
-                    new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            if (location != null) {
-                                mLastLocation = location;
 
-                                mAccuracy.setText("Accuracy : " + mLastLocation.getAccuracy());
-                            } else {
-                                mLocationTextView.setText(R.string.no_location);
-                            }
-                        }
+    private class Latlo {
+        double lat;
+        double lo;
 
-                    });
+        public Latlo() {
+        }
 
+        public Latlo(double lat, double lo) {
+            this.lat = lat;
+            this.lo = lo;
+        }
+
+        public double getLat() {
+            return lat;
+        }
+
+        public double getLo() {
+            return lo;
         }
     }
 }

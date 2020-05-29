@@ -51,6 +51,8 @@ public class SignInActivity extends AppCompatActivity {
     private TextInputLayout email,password;
 
 
+    static final String TAG = "SignInActivity";
+
     private String emailtype;
     private String passwordtype;
     private String token;
@@ -133,14 +135,19 @@ public class SignInActivity extends AppCompatActivity {
     private void login() {
 
 
-        Login login = new Login(emailtype,passwordtype);
+        final Login login = new Login(emailtype,passwordtype);
         Call<User> call =  userClient.login(emailtype,passwordtype);
 
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if(response.isSuccessful()){
-                    Toast.makeText(SignInActivity.this,"Succes" , Toast.LENGTH_LONG).show();
+                    if(response.body().getUser().getMerchant_id() == null){
+                        Toast.makeText(SignInActivity.this,"Succes Login As Guide" , Toast.LENGTH_LONG).show();
+                    }else {
+                        Toast.makeText(SignInActivity.this,"Succes Login As Merchant" , Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "onResponse: " + response.body().getUser().getMerchant_id());
+                    }
 
                     if(response.body() != null){
                         SharedPreferences sharedPreferences = getSharedPreferences("UserData",Context.MODE_PRIVATE);
@@ -149,6 +156,7 @@ public class SignInActivity extends AppCompatActivity {
                         editor.putString("token",token);
                         editor.putString("points",response.body().getUser().getPoints());
                         editor.putString("email",response.body().getUser().getEmail());
+                        editor.putInt("merchant_id",response.body().getUser().getMerchant_id());
                         editor.putString("name",response.body().getUser().getName());
                         editor.putString("points",response.body().getUser().getPoints());
                         editor.putString("role",response.body().getRole());
