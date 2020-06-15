@@ -1,5 +1,6 @@
 package com.example.tourguide.service;
 
+import com.example.tourguide.JsonPlaceHolderApi;
 import com.example.tourguide.model.MerchantIndex;
 import com.example.tourguide.model.MerchantItemStore;
 import com.example.tourguide.model.MerchantItemUpdate;
@@ -68,6 +69,16 @@ public interface UserClient {
                                         @Part("price") RequestBody price,
                                         @Path("iditem") int iditem,
                                         @Part("_method") RequestBody method);
+    @FormUrlEncoded
+    @POST("promo")
+    Call<JsonResponse> storePromoApi(@Header("Authorization") String token,
+                                 @Field("item_id") int item_id,
+                                 @Field("value") int value,
+                                 @Field("description")String description,
+                                 @Field("category")String category,
+                                 @Field("max_cut") String max_cut,
+                                 @Field("start_time")String start_time,
+                                 @Field("end_time")String end_time);
     @DELETE("items/{id}")
     Call<JsonResponse> deleteItemMerhcant(@Header("Authorization") String token,
                                           @Path("id") int id);
@@ -79,4 +90,7 @@ public interface UserClient {
     Call<GenerateQR> generateQR(@Header("Authorization")String token,
                                 @Path("id") int id);
 
+    @GET("/qr/scan/{token}")
+    Call<JsonResponse> scanQrCode(@Header("Authorization")String tokenLogin,
+                                  @Path("token") String token);
 }

@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,21 +18,35 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tourguide.Activity.LandingMainActivity;
+import com.example.tourguide.Activity.ListenerFilterRecommended;
 import com.example.tourguide.Activity.LoginActivity;
 import com.example.tourguide.Activity.Merchant;
 import com.example.tourguide.Activity.SplashScreen;
+import com.example.tourguide.Activity.ui.home.AdapterListenerFilter;
 import com.example.tourguide.R;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RecyclerViewRecommendedAdapter extends RecyclerView.Adapter<RecyclerViewRecommendedAdapter.ViewHolder> {
 
+    private static final String TAG = "RecommendedAdapter";
     Context mContext;
     List<Recommended> mData;
+    List<Recommended> mDataAll;
+    List<Recommended> mDataFilter = new ArrayList<>();
+
+    int category;
+
+    public RecyclerViewRecommendedAdapter(Context mContext) {
+        this.mContext = mContext;
+    }
 
     public RecyclerViewRecommendedAdapter(Context mContext, List<Recommended> mData) {
         this.mContext = mContext;
         this.mData = mData;
+        this.mDataAll = new ArrayList<>(mData);
     }
 
     @NonNull
@@ -70,6 +86,34 @@ public class RecyclerViewRecommendedAdapter extends RecyclerView.Adapter<Recycle
     public int getItemCount() {
         return mData.size();
     }
+
+    public void getFilter(String categoryId){
+
+        if(!mData.isEmpty()){
+            if(mData.size() != mDataAll.size()){
+                mData = mDataAll;
+            }
+            mDataFilter = new ArrayList<Recommended>();
+
+            for (int i = 0; i< mData.size();i++){
+                if(mData.get(i).getCategory_id() == Integer.parseInt(categoryId)){
+                        mDataFilter.add(mData.get(i));
+                    Log.d(TAG, "getFilter: "+ mData.size());
+                }
+            }
+            if (mDataFilter.size() != 0){
+                mData = mDataFilter;
+                notifyDataSetChanged();
+            }
+        }
+    }
+
+    public void getResults(ArrayList<Recommended> filter) {
+        mData = filter;
+        Log.d(TAG, "getResults: Seharusnya berubah :)");
+        notifyDataSetChanged();
+    }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -63,7 +64,7 @@ public class RecyclerViewVoucherAdapter extends RecyclerView.Adapter<RecyclerVie
         private TextView nominal;
         private TextView nameStore;
         private TextView mEndDate;
-        private MaterialButton claim;
+        private Button claim;
         public VoucherHolder(@NonNull View itemView) {
             super(itemView);
 

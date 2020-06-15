@@ -127,29 +127,10 @@
                 android:layout_height="wrap_content"/>
 
         </com.google.android.material.textfield.TextInputLayout>
+
+
         <com.google.android.material.textfield.TextInputLayout
             app:layout_constraintTop_toBottomOf="@id/handphone"
-            android:id="@+id/Ocuupation"
-            android:layout_marginTop="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:boxCornerRadiusBottomEnd="15dp"
-            app:boxCornerRadiusBottomStart="15dp"
-            app:boxCornerRadiusTopEnd="15dp"
-            app:boxCornerRadiusTopStart="15dp"
-            android:hint="Occupation"
-            app:endIconMode="dropdown_menu"
-            app:boxStrokeColor="@color/my_app_primary_variant_color"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                android:id="@+id/dropdown"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            app:layout_constraintTop_toBottomOf="@id/Ocuupation"
             android:id="@+id/password"
             android:layout_marginTop="50dp"
             app:counterEnabled="true"

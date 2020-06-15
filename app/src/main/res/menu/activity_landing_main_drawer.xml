@@ -14,11 +14,6 @@
         <menu>
             <group android:checkableBehavior="single">
                 <item
-
-                    android:id="@+id/edit_account"
-                    android:icon="@drawable/edit"
-                    android:title="Edit Account" />
-                <item
                     android:id="@+id/scan"
                     android:icon="@drawable/ic_scan"
                     android:title="Scan" />

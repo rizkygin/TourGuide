@@ -69,7 +69,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/bottom"
             app:layout_constraintTop_toBottomOf="@+id/addressText"
-            android:background="@drawable/qr"
+            android:background="@drawable/ic_code_scanner_auto_focus_off"
             android:layout_width="175dp"
             android:layout_height="175dp"/>
         <com.google.android.material.button.MaterialButton

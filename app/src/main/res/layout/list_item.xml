@@ -1,123 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/itemMerchant"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <androidx.cardview.widget.CardView
-        android:id="@+id/itemMerchant"
+    app:cardElevation="@dimen/activity_vertical_margin"
+    app:cardMaxElevation="6dp">
+
+
+    <RelativeLayout
+        android:id="@+id/listVoucher"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/mtrl_card_spacing"
-        android:layout_marginTop="@dimen/mtrl_card_spacing">
+        android:layout_height="113dp"
+        android:layout_margin="3dp">
 
-        <RelativeLayout
-            android:id="@+id/listVoucher"
-            android:layout_margin="5dp"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btnUpdateItem"
+            android:layout_width="55dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="15dp"
+            android:background="@drawable/voucher_bg"
+            android:gravity="center"
+            android:text="Update"
+            android:textAllCaps="false"
+            android:textColor="#05B29D"
+            android:textSize="8dp" />
+
+
+        <ImageView
+            android:id="@+id/bgDisc"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/discount"
+            android:rotation="45" />
+
+        <TextView
+            android:id="@+id/discount"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#B2EBF2">
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnUpdateItem"
-                android:layout_marginTop="15dp"
-                android:backgroundTint="#1F4E48"
-                android:textColor="@android:color/white"
-                android:layout_marginRight="55dp"
-                android:text="UPDATE"
-                android:textSize="8dp"
-                android:gravity="center"
-                android:layout_alignParentRight="true"
-                android:layout_width="55dp"
-                android:layout_height="30dp"/>
+            android:layout_alignEnd="@id/bgDisc"
+            android:layout_alignRight="@id/bgDisc"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:rotation="45"
+            android:text="50"
+            android:textColor="#ffff"
+            android:textSize="10dp"
+            android:textStyle="bold" />
 
-            <com.google.android.material.button.MaterialButton
-                android:visibility="gone"
-                android:id="@+id/btnUpdate"
-                android:textSize="6dp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:text="Update"
-                style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="60dp"
-                android:layout_height="40dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="9dp"
-                android:layout_marginRight="61dp"
-                app:cornerRadius="9dp" />
+        <TextView
+            android:paddingTop="20dp"
+            android:id="@+id/nameItem"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/imItem"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:text="Name Item"
+            android:textColor="#212121"
+            android:textStyle="italic" />
+
+
+        <TextView
+            android:id="@+id/oriPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nameItem"
+            android:layout_alignLeft="@id/nameItem"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Original Price"
+            android:textColor="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/priceNow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/oriPrice"
+            android:layout_alignLeft="@id/nameItem"
+            android:layout_marginTop="10dp"
+            android:text="Price Discount"
+            android:textColor="#05B29D" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_margin="15dp"
+            android:id="@+id/imItem"
+            android:layout_width="100dp"
+            android:layout_height="90dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            app:cardCornerRadius="10dp">
 
             <ImageView
-                android:id="@+id/bgDisc"
-                android:layout_width="50dp"
-                android:layout_height="40dp"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/discount"
-                android:rotation="45" />
-
-            <TextView
-                android:id="@+id/discount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignEnd="@id/bgDisc"
-                android:layout_alignRight="@id/bgDisc"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:paddingTop="10dp"
-                android:paddingRight="10dp"
-                android:rotation="45"
-                android:text="50"
-                android:textColor="#ffff"
-                android:textSize="10dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/nameItem"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_alignStart="@id/imItem"
-                android:layout_marginStart="120dp"
-                android:text="Name Item"
-                android:textColor="#212121" />
+                android:id="@+id/imItem1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+        </androidx.cardview.widget.CardView>
+        <ImageView
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/darker_gray"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+    </RelativeLayout>
 
 
-            <TextView
-                android:id="@+id/oriPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/nameItem"
-                android:layout_alignLeft="@id/nameItem"
-                android:layout_marginTop="10dp"
-                android:text="Original Price"
-                android:textColor="#BDBDBD" />
-
-            <TextView
-                android:id="@+id/priceNow"
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/oriPrice"
-                android:layout_alignLeft="@id/nameItem"
-                android:layout_marginTop="10dp"
-                android:text="Price Discount"
-                android:textColor="#212121" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/imItem"
-                android:layout_width="100dp"
-                android:layout_height="90dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                app:cardCornerRadius="10dp">
-
-                <ImageView
-                    android:id="@+id/imItem1"
-                    android:scaleType="centerCrop"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </androidx.cardview.widget.CardView>
-        </RelativeLayout>
-        
-        
-    </androidx.cardview.widget.CardView>
-
-</LinearLayout>
+</androidx.cardview.widget.CardView>

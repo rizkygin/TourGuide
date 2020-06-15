@@ -47,35 +47,68 @@
 
         <RelativeLayout
             android:id="@+id/labelRelative"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:minHeight="80dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/imMerchant">
 
             <TextView
-                android:id="@+id/tvDescRelative"
+                android:layout_alignParentLeft="true"
+                android:gravity="start"
+                android:textStyle="bold"
+                android:id="@+id/labelClose"
+                android:text="Opening Hours"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:textStyle="bold"
+                android:layout_below="@id/labelAddress"
+                android:id="@+id/labelDesc"
+                android:text="Description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:paddingLeft="10dp"
+                android:layout_alignLeft="@id/tvOpenAtRelative"
+                android:layout_below="@id/labelAddress"
+                android:layout_toRightOf="@id/labelDesc"
+                android:id="@+id/tvDescRelative"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Description" />
 
             <TextView
+                android:layout_toRightOf="@id/tvOpenAtRelative"
                 android:id="@+id/tvClosedRelative"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvDescRelative"
-                android:paddingTop="10dp"
                 android:text="Closed" />
-
             <TextView
                 android:id="@+id/tvOpenAtRelative"
+                android:paddingLeft="10dp"
+                android:layout_toRightOf="@id/labelClose"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvClosedRelative"
                 android:text="Open At" />
 
+
             <TextView
+                android:textStyle="bold"
+                android:gravity="top|start"
+                android:layout_below="@id/labelClose"
+                android:id="@+id/labelAddress"
+                android:text="Location"
+                android:layout_alignBottom="@id/tvAddressRelative"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_toRightOf="@id/labelAddress"
+                android:paddingLeft="10dp"
+                android:layout_alignLeft="@id/tvOpenAtRelative"
                 android:id="@+id/tvAddressRelative"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -111,15 +144,21 @@
             <TextView
                 android:id="@+id/tvLabel"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:background="#148C94"
+                android:background="@drawable/no_discount_label"
                 android:paddingLeft="10dp"
                 android:text="Discount Today"
                 android:textColor="@android:color/white"
                 android:textSize="18dp"
                 android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/noDiscountImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/no_discount" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/merchantItems"

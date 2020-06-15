@@ -41,8 +41,8 @@ public class Merchant extends AppCompatActivity {
     FloatingActionButton fab;
     RecyclerView recyclerView;
     int path;
-    TextView mNameStore,mDesc,mClose,mOpen,mAddress;
-    ImageView mPic;
+    TextView mNameStore,mDesc,mClose,mOpen,mAddress,mDiscountText;
+    ImageView mPic,mImgnoDiscount;
     List<ItemOnMerchant> mList = new ArrayList<>();
     String urlPhoto;
     int userMerchantId;
@@ -56,10 +56,12 @@ public class Merchant extends AppCompatActivity {
 
         mNameStore = findViewById(R.id.nameMerchant);
         mDesc = findViewById(R.id.tvDescRelative);
+        mDiscountText = findViewById(R.id.tvLabel);
         mClose = findViewById(R.id.tvClosedRelative);
         mOpen = findViewById(R.id.tvOpenAtRelative);
         mAddress = findViewById(R.id.tvAddressRelative);
         mPic = findViewById(R.id.imMerchant);
+        mImgnoDiscount = findViewById(R.id.noDiscountImg);
         fab = findViewById(R.id.fabMerchant);
 
         recyclerView = findViewById(R.id.merchantItems);
@@ -107,10 +109,10 @@ public class Merchant extends AppCompatActivity {
                 }
                 mNameStore.setText(response.body().getData().get(0).getName());
                 Log.d(TAG, "onResponse: " +  response.body().getData().get(0).getName());
-                mDesc.setText("Description :" + response.body().getData().get(0).getDescription());
-                mAddress.setText("Address :" + response.body().getData().get(0).getAddress());
-                mClose.setText("Closed : 22.00" );
-                mOpen.setText("Open : 10.00" );
+                mDesc.setText("" + response.body().getData().get(0).getDescription());
+                mAddress.setText("" + response.body().getData().get(0).getAddress());
+                mClose.setText("- 22.00" );
+                mOpen.setText("10.00 " );
                 List<ItemOnMerchant> items = response.body().getData().get(0).getItem();
 
 
@@ -119,11 +121,21 @@ public class Merchant extends AppCompatActivity {
                     mList.add(new ItemOnMerchant(item.getId(),item.getMerchant_id(),item.getName(),item.getDescription(),item.getPhoto(),item.getPrice(),promos));
                 }
                 ItemMerchant adapter = new ItemMerchant(Merchant.this, mList,path,response.body().getData().get(0).getAddress());
+
+                mImgnoDiscount.setVisibility(View.GONE);
+                if(mList.size() == 0){
+                    recyclerView.setVisibility(View.GONE);
+                    mImgnoDiscount.setVisibility(View.VISIBLE);
+                    mDiscountText.setText("No Discount Today");
+                }
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(Merchant.this));
-                ItemTouchHelper itemTouchHelper = new
-                        ItemTouchHelper(new SwipeToDeleteCallback(adapter));
-                itemTouchHelper.attachToRecyclerView(recyclerView);
+                if(userMerchantId == path){
+                    Log.d(TAG, "onResponse: userMerchant Path " + userMerchantId + " : path " + path);
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
+                    itemTouchHelper.attachToRecyclerView(recyclerView);
+                }
+
 
 
                 urlPhoto = response.body().getData().get(0).getPhoto();

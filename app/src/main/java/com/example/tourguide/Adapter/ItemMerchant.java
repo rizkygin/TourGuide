@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,6 +44,7 @@ import retrofit2.Response;
 public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> {
     private static final String TAG = "ItemMerchant";
 
+    String urlPhoto = null;
     Context mContext;
 
     private String token;
@@ -55,11 +58,15 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
     }
 
 
-    public ItemMerchant(Context mContext, List<ItemOnMerchant> mData,int path,String address) {
+    public ItemMerchant(Context mContext, List<ItemOnMerchant> mData, int path, String address) {
         this.mContext = mContext;
         this.mData = mData;
         this.path = path;
         this.address = address;
+    }
+
+    public Context getmContext() {
+        return mContext;
     }
     @NonNull
     @Override
@@ -85,7 +92,7 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
         }
 //        holder.mName.setText(mData.get(position).getName() +" "+ mData.get(position).getId() + " " + " " + holder.getAdapterPosition() + " " +position);
         holder.mName.setText(mData.get(position).getName());
-        String urlPhoto = mData.get(position).getPhoto();
+        urlPhoto = mData.get(position).getPhoto();
         Glide.with(mContext)
                 .load(urlPhoto)
                 .into(holder.mImage);
@@ -96,16 +103,17 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
             int originalPrice = mData.get(position).getPrice();
             holder.mDisc.setText(String.valueOf(value));
 //            holder.mOri.setText("Original Price " + result(value,originalPrice));
+            holder.mPrice.setText("Rp. " + result(value,originalPrice));
             int positionswip = holder.getAdapterPosition();
-            holder.mOri.setText("Adapter position " + mData.get(positionswip).getId());
+            holder.mOri.setText("Rp " + originalPrice);
             holder.mRelative.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, SpesificProduct.class);
                     Bundle bundle = new Bundle();
-                    String photo = mData.get(position).getPhoto();
                     String description = mData.get(position).getDescription();
-                    bundle.putString("StringURLImage",photo);
+                    bundle.putString("StringURLImage",mData.get(position).getPhoto());
+                    Log.d(TAG, "onClick: StringURLImage "+ urlPhoto );
                     bundle.putString("StringDescription",description);
                     bundle.putString("StringAddress",address);
                     bundle.putInt("Value",mData.get(position).getPromo().get(0).getValue());
@@ -136,8 +144,10 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
+                bundle.putString("StringURLImage",mData.get(position).getPhoto());
                 bundle.putString("Mode","UpdateItem");
                 bundle.putInt("Merhant_id",path);
+                bundle.putInt("item_id",mData.get(position).getId());
                 Intent intent = new Intent(mContext,AddDiscount.class);
                 intent.putExtras(bundle);
                 mContext.startActivity(intent);
@@ -162,14 +172,15 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         callRemoveApi(pos);
+
+                        mData.remove(pos);
+                        notifyItemRemoved(pos);
                     }
                 });
 
         AlertDialog alert11 = builderItem.create();
         alert11.show();
 
-        mData.remove(position);
-        notifyItemRemoved(position);
 
     }
 
@@ -190,8 +201,10 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
         });
     }
 
-    private int result(int value, int originalPrice) {
-        return originalPrice - value/100 * originalPrice;
+    private String result(int value, int originalPrice) {
+        int result;
+        result = originalPrice - value/100 * originalPrice;
+        return String.valueOf(result);
     }
 
     @Override
@@ -199,10 +212,31 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
         return mData.size();
     }
 
+    public void updateActivity(int adapterPosition) {
+        Intent intent = new Intent(mContext, AddDiscount.class);
+        Bundle bundle = new Bundle();
+        int item_id = mData.get(adapterPosition).getId();
+        String photo = mData.get(adapterPosition).getPhoto();
+        String description = mData.get(adapterPosition).getDescription();
+        bundle.putString("StringURLImage",photo);
+        bundle.putString("StringDescription",description);
+        bundle.putInt("Item_id",item_id);
+        bundle.putString("Mode","AddPromo");
+        bundle.putInt("Merhant_id",path);
+//        bundle.putString("StringAddress",address);
+//        bundle.putInt("Value",mData.get(position).getPromo().get(0).getValue());
+//        bundle.putString("StringEndDate",mData.get(position).getPromo().get(0).getEndDate());
+//        bundle.putInt("merchantID",path);
+//        bundle.putInt("pathItem",mData.get(position).getId());
+
+        intent.putExtras(bundle);
+        mContext.startActivity(intent);
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
         private RelativeLayout mRelative;
-        private MaterialButton mButtonUpdate;
+        private Button mButtonUpdate;
         private ImageView mImage;
         private ImageView mbgDisc;
         private CardView mitem;

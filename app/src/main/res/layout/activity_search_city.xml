@@ -6,14 +6,13 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     tools:context=".Activity.SearchCityActivity">
-
     <RelativeLayout
         android:id="@+id/rvTOPSC"
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <AutoCompleteTextView
+        <EditText
             android:id="@+id/actvCity"
             android:layout_width="match_parent"
             android:layout_toRightOf="@+id/btnBackSC"
@@ -29,36 +28,47 @@
             android:layout_height="wrap_content"/>
     </RelativeLayout>
 
-    <RelativeLayout
+    <ScrollView
         android:id="@+id/rvMIDSC"
         android:layout_below="@id/rvTOPSC"
+        android:layout_above="@+id/btncurrent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcCitySC"
+        <LinearLayout
+
             android:layout_width="match_parent"
-            android:minHeight="530dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcCitySC"
+                android:layout_width="match_parent"
+                android:minHeight="200dp"
+                android:layout_height="wrap_content"/>
 
-    </RelativeLayout>
+        </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+
+        android:id="@+id/btncurrent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_below="@id/rvMIDSC"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <com.google.android.material.button.MaterialButton
-            app:cornerRadius="15dp"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
             android:padding="20dp"
+            android:text="CURRENT LOCATION"
+            android:textColor="@android:color/white"
+            app:cornerRadius="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:text="CURRENT LOCATION"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
 
 
 

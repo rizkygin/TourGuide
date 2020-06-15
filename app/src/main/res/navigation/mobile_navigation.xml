@@ -11,33 +11,4 @@
         android:label=" "
         tools:layout="@layout/fragment_home" />
 
-    <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.example.tourguide.Activity.ui.gallery.GalleryFragment"
-        android:label=" "
-        tools:layout="@layout/fragment_gallery" />
-
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.example.tourguide.Activity.ui.slideshow.SlideshowFragment"
-        android:label=" "
-        tools:layout="@layout/fragment_slideshow" />
-
-    <fragment
-        android:id="@+id/nav_tools"
-        android:name="com.example.tourguide.Activity.ui.tools.ToolsFragment"
-        android:label=" "
-        tools:layout="@layout/fragment_tools" />
-
-    <fragment
-        android:id="@+id/nav_share"
-        android:name="com.example.tourguide.Activity.ui.share.ShareFragment"
-        android:label=" "
-        tools:layout="@layout/fragment_share" />
-
-    <fragment
-        android:id="@+id/nav_send"
-        android:name="com.example.tourguide.Activity.ui.send.SendFragment"
-        android:label=" "
-        tools:layout="@layout/fragment_send" />
 </navigation>

@@ -1,10 +1,17 @@
 package com.example.tourguide.Activity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.tourguide.R;
 import com.example.tourguide.model.Login;
+import com.example.tourguide.model.MerchantShow;
 import com.example.tourguide.model.User;
+import com.example.tourguide.service.Api;
 import com.example.tourguide.service.UserClient;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -19,6 +26,7 @@ import android.accounts.OperationCanceledException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -53,6 +61,9 @@ public class SignInActivity extends AppCompatActivity {
 
     static final String TAG = "SignInActivity";
 
+    int merchant_id;
+    Intent i;
+    SharedPreferences sharedPreferences;
     private String emailtype;
     private String passwordtype;
     private String token;
@@ -118,7 +129,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void validate() {
-
+        progressBar.setVisibility(View.GONE);
         emailtype = email.getEditText().getText().toString().trim();
         passwordtype = password.getEditText().getText().toString();
 
@@ -142,21 +153,16 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if(response.isSuccessful()){
-                    if(response.body().getUser().getMerchant_id() == null){
-                        Toast.makeText(SignInActivity.this,"Succes Login As Guide" , Toast.LENGTH_LONG).show();
-                    }else {
-                        Toast.makeText(SignInActivity.this,"Succes Login As Merchant" , Toast.LENGTH_LONG).show();
-                        Log.d(TAG, "onResponse: " + response.body().getUser().getMerchant_id());
-                    }
 
                     if(response.body() != null){
-                        SharedPreferences sharedPreferences = getSharedPreferences("UserData",Context.MODE_PRIVATE);
+                        sharedPreferences = getSharedPreferences("UserData",Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         token = response.body().getToken();
                         editor.putString("token",token);
                         editor.putString("points",response.body().getUser().getPoints());
                         editor.putString("email",response.body().getUser().getEmail());
                         editor.putInt("merchant_id",response.body().getUser().getMerchant_id());
+                        merchant_id = response.body().getUser().getMerchant_id();
                         editor.putString("name",response.body().getUser().getName());
                         editor.putString("points",response.body().getUser().getPoints());
                         editor.putString("role",response.body().getRole());
@@ -166,14 +172,21 @@ public class SignInActivity extends AppCompatActivity {
 
                         progressBar.setVisibility(View.GONE);
 
-                        Intent i = new Intent(SignInActivity.this, LandingMainActivity.class);
-                        startActivity(i);
+                        i = new Intent(SignInActivity.this, LandingMainActivity.class);
+                        if(response.body().getUser().getMerchant_id() != null){
+                            Toast.makeText(SignInActivity.this,"Success Login As Guide" , Toast.LENGTH_LONG).show();
+
+                        }else{
+                            Toast.makeText(SignInActivity.this,"Success Login As Guide" , Toast.LENGTH_LONG).show();
+                            startActivity(i);
+                        }
                     }else{
                         Toast.makeText(SignInActivity.this,"No Data Found",Toast.LENGTH_LONG);
                     }
 
                 }
                 else {
+                    progressBar.setVisibility(View.GONE);
                     // error case
                     switch (response.code()) {
                         case 404:
@@ -229,6 +242,29 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
+//    private void callApiimage() {
+//            Call<MerchantShow> call = Api.getClient().merchantShow(merchant_id,"Bearer " + token);
+//            call.enqueue(new Callback<MerchantShow>() {
+//                @Override
+//                public void onResponse(Call<MerchantShow> call, Response<MerchantShow> response) {
+//                    if (!response.isSuccessful()) {
+//                        Log.d(TAG, "Code :" + response.code());
+//                        return;
+//                    }
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//                    editor.putString("imageMerchant","");
+//                    editor.commit();
+//                    Toast.makeText(SignInActivity.this,"Success Login As Merchant" , Toast.LENGTH_LONG).show();
+//
+//                    startActivity(i);
+//                }
+//
+//                @Override
+//                public void onFailure(Call<MerchantShow> call, Throwable t) {
+//
+//                }
+//            });
+//    }
 
 
 }

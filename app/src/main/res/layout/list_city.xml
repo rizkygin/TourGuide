@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/itemMerchant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/mtrl_card_spacing"
+        android:layout_marginTop="@dimen/mtrl_card_spacing">
+
+        <TextView
+            android:layout_margin="5dp"
+            android:textColor="@android:color/black"
+            android:background="#F0F7F8"
+            android:padding="10dp"
+            android:id="@+id/CityList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Seacrh City..."
+            />
+
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

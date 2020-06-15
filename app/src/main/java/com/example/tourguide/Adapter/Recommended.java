@@ -2,7 +2,7 @@ package com.example.tourguide.Adapter;
 
 public class Recommended {
     private int id;
-    private String category_id;
+    private int category_id;
     private String name;
     private String description;
     private String photo;
@@ -14,18 +14,19 @@ public class Recommended {
     public Recommended() {
     }
 
-    public Recommended(String name, String address, String status, int id) {
+    public Recommended(String name, String address, String status, int id,int category_id) {
         this.name = name;
         this.address = address;
         this.status = status;
         this.id = id;
+        this.category_id = category_id;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getCategory_id() {
+    public int getCategory_id() {
         return category_id;
     }
 
@@ -61,7 +62,7 @@ public class Recommended {
         this.id = id;
     }
 
-    public void setCategory_id(String category_id) {
+    public void setCategory_id(int category_id) {
         this.category_id = category_id;
     }
 

@@ -15,16 +15,27 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@drawable/custom_background"
             app:popupTheme="@style/Theme.MyApp.PopupOverlay" >
-            <androidx.appcompat.widget.SearchView
-                android:background="@drawable/custom_button"
+            <com.google.android.material.button.MaterialButton
+                app:icon="@drawable/location_24dp"
+                android:padding="3dp"
+                app:cornerRadius="8dp"
+                android:text="Search Here"
+                android:textColor="@android:color/darker_gray"
+                android:backgroundTint="@android:color/white"
                 android:id="@+id/search_view"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                app:queryHint="Search Here"
-                app:searchIcon="@drawable/location_24dp" />
+                app:queryHint="Search Here"/>
         </androidx.appcompat.widget.Toolbar>
+        <fragment
+            class="com.example.tourguide.Activity.FragamentFilter"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/fragmentFilter"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 

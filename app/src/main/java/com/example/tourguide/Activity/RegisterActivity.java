@@ -63,7 +63,6 @@ public class RegisterActivity extends AppCompatActivity {
         handphone = findViewById(R.id.handphone);
         password = findViewById(R.id.password);
 
-        spinner = findViewById(R.id.dropdown);
         signUp = findViewById(R.id.btnSignUp);
 
         signUp.setOnClickListener(new View.OnClickListener() {
@@ -84,22 +83,6 @@ public class RegisterActivity extends AppCompatActivity {
                 R.layout.custom_spinner_dropdown,
                 getResources().getStringArray(R.array.occupation)
         );
-//        adapter.setDropDownViewResource(R.layout.custom_spinner_dropdown);
-        spinner.setAdapter(adapter);
-
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedOccupation = parent.getItemAtPosition(position).toString();
-                Toast.makeText(RegisterActivity.this, selectedOccupation, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
     }
 
     private boolean validate() {
@@ -110,7 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
         this.addresstype = address.getEditText().getText().toString();
         this.handphonetype = handphone.getEditText().getText().toString();
 
-        if(emailtype.isEmpty() || isValidEmail(emailtype)){
+        if(emailtype.isEmpty()){
             email.setError("Is Not Valid Email");
             return false;
         }
