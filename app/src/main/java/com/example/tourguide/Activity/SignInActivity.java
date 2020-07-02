@@ -1,51 +1,29 @@
 package com.example.tourguide.Activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.example.tourguide.R;
 import com.example.tourguide.model.Login;
-import com.example.tourguide.model.MerchantShow;
 import com.example.tourguide.model.User;
-import com.example.tourguide.service.Api;
 import com.example.tourguide.service.UserClient;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
-import android.accounts.AuthenticatorException;
-import android.accounts.OperationCanceledException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.logging.Handler;
+import java.util.concurrent.TimeUnit;
 
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,7 +34,7 @@ public class SignInActivity extends AppCompatActivity {
 
     private TextView test;
     private MaterialButton login;
-    private TextInputLayout email,password;
+    private TextInputLayout email, password;
 
 
     static final String TAG = "SignInActivity";
@@ -95,25 +73,29 @@ public class SignInActivity extends AppCompatActivity {
 //            }
 //        })
 //        .build();
-
+    OkHttpClient client = new OkHttpClient.Builder()
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .writeTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .build();
     Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("https://tourgr.id/api/")
             .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
             .build();
     UserClient userClient = retrofit.create(UserClient.class);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
 
-        test =  findViewById(R.id.signintext);
+        test = findViewById(R.id.signintext);
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
         email = (TextInputLayout) findViewById(R.id.emailajanihcuy);
         password = findViewById(R.id.password);
-
-
 
 
         login = findViewById(R.id.btnloginaplikasi);
@@ -122,50 +104,64 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-                validate();
-                login();
+                if(validate()){
+                    login();
+                }
             }
         });
     }
 
-    private void validate() {
-        progressBar.setVisibility(View.GONE);
+    private boolean validate() {
         emailtype = email.getEditText().getText().toString().trim();
         passwordtype = password.getEditText().getText().toString();
 
-        
-        if(emailtype.isEmpty()){
+
+        if (emailtype.isEmpty()) {
             email.setError("Fill The Field");
+            progressBar.setVisibility(View.GONE);
+            return false;
+
         }
-        if(passwordtype.isEmpty()){
+        if (passwordtype.isEmpty()) {
             password.setError("Fill The Field");
+            progressBar.setVisibility(View.GONE);
+
+            return false;
         }
+        return true;
     }
 
 
     private void login() {
 
 
-        final Login login = new Login(emailtype,passwordtype);
-        Call<User> call =  userClient.login(emailtype,passwordtype);
+        final Login login = new Login(emailtype, passwordtype);
+        Call<User> call = userClient.login(emailtype, passwordtype);
 
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
 
-                    if(response.body() != null){
-                        sharedPreferences = getSharedPreferences("UserData",Context.MODE_PRIVATE);
+                    if (response.body() != null) {
+                        sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         token = response.body().getToken();
-                        editor.putString("token",token);
-                        editor.putString("points",response.body().getUser().getPoints());
-                        editor.putString("email",response.body().getUser().getEmail());
-                        editor.putInt("merchant_id",response.body().getUser().getMerchant_id());
-                        merchant_id = response.body().getUser().getMerchant_id();
-                        editor.putString("name",response.body().getUser().getName());
-                        editor.putString("points",response.body().getUser().getPoints());
-                        editor.putString("role",response.body().getRole());
+                        editor.putString("token", token);
+                        editor.putString("points", response.body().getUser().getPoints());
+                        editor.putString("email", response.body().getUser().getEmail());
+//                        editor.putInt("merchant_id", 0);
+                        editor.putString("name", response.body().getUser().getName());
+                        editor.putString("role", response.body().getRole());
+                        editor.putString("SearchedCity", null);
+                        if (response.body().getUser().getMerchant_id() != null) {
+                            editor.putInt("merchant_id", response.body().getUser().getMerchant_id());
+                            merchant_id = response.body().getUser().getMerchant_id();
+                            SharedPreferences sharedPreferences = getSharedPreferences("Tutor", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editors = sharedPreferences.edit();
+                            editors.putBoolean("needTutor", true);
+                            editors.commit();
+                        }
 
                         editor.commit();
 
@@ -173,19 +169,20 @@ public class SignInActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
 
                         i = new Intent(SignInActivity.this, LandingMainActivity.class);
-                        if(response.body().getUser().getMerchant_id() != null){
-                            Toast.makeText(SignInActivity.this,"Success Login As Guide" , Toast.LENGTH_LONG).show();
+                        if (response.body().getUser().getMerchant_id() != null) {
+                            Toast.makeText(SignInActivity.this, "Success Login As Merchant", Toast.LENGTH_LONG).show();
+                            startActivity(i);
 
-                        }else{
-                            Toast.makeText(SignInActivity.this,"Success Login As Guide" , Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(SignInActivity.this, "Success Login As Guide", Toast.LENGTH_LONG).show();
                             startActivity(i);
                         }
-                    }else{
-                        Toast.makeText(SignInActivity.this,"No Data Found",Toast.LENGTH_LONG);
+
+                    } else {
+                        Toast.makeText(SignInActivity.this, "No Data Found", Toast.LENGTH_LONG);
                     }
 
-                }
-                else {
+                } else {
                     progressBar.setVisibility(View.GONE);
                     // error case
                     switch (response.code()) {
@@ -196,7 +193,8 @@ public class SignInActivity extends AppCompatActivity {
                             Toast.makeText(SignInActivity.this, "server broken", Toast.LENGTH_SHORT).show();
                             break;
                         default:
-                            Toast.makeText(SignInActivity.this, "unknown error " + response.code(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignInActivity.this, "Either one of email password doesn't match", Toast.LENGTH_SHORT).show();
+
                             break;
                     }
                 }
@@ -216,23 +214,15 @@ public class SignInActivity extends AppCompatActivity {
                 String Message = t.getMessage();
 //                Toast.makeText(SignInActivity.this,"Sorry Try Again" + emailtype + "/ " + "pass " + Message,Toast.LENGTH_LONG ).show();
 ////                Log.d("response", t.getStackTrace().toString());
-                if (t instanceof SocketTimeoutException)
-                {
-                    Toast.makeText(SignInActivity.this,"Connection time out  " + Message,Toast.LENGTH_LONG ).show();
-                }
-                else if (t instanceof IOException)
-                {
-                    Toast.makeText(SignInActivity.this,"Time Out  " + Message,Toast.LENGTH_LONG ).show();
-                }
-                else
-                {
+                if (t instanceof SocketTimeoutException) {
+                    Toast.makeText(SignInActivity.this, "Connection time out  " + Message, Toast.LENGTH_LONG).show();
+                } else if (t instanceof IOException) {
+                    Toast.makeText(SignInActivity.this, "Time Out  " + Message, Toast.LENGTH_LONG).show();
+                } else {
                     //Call was cancelled by user
-                    if(call.isCanceled())
-                    {
+                    if (call.isCanceled()) {
                         System.out.println("Call was cancelled forcefully");
-                    }
-                    else
-                    {
+                    } else {
                         //Generic error handling
                         System.out.println("Network Error :: " + t.getLocalizedMessage());
                     }

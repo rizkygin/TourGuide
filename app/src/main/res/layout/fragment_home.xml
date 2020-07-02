@@ -43,8 +43,6 @@
         <LinearLayout
             android:background="@drawable/recommended_custom"
             android:layout_marginTop="4dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:id="@+id/textLinier"
             android:paddingTop="3dp"
             android:orientation="vertical"
@@ -70,7 +68,6 @@
 
 
         <LinearLayout
-            android:layout_marginHorizontal="10dp"
             android:background="@android:color/white"
             android:layout_below="@id/textLinier"
             android:layout_width="match_parent"

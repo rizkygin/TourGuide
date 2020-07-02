@@ -9,9 +9,10 @@
     <ImageView
         android:id="@+id/logo"
         android:layout_width="200dp"
+        android:scaleType="center"
         android:layout_height="200dp"
         android:layout_marginTop="80dp"
-        android:src="@drawable/tourguidelogo"
+        android:src="@drawable/logo"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -19,14 +20,15 @@
 
     <TextView
         android:id="@+id/moto"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="250dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/cardview_dark_background"
-        android:text="Fee doesnt buy anithing, but it taken everithing "/>
+        android:textSize="20dp"
+        android:textStyle="bold|italic"
+        android:text="@string/travel_guide_reward"/>
 
 
 
@@ -41,7 +43,7 @@
             android:id="@+id/text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Arlready have account, ? Please"
+            android:text="@string/already_have_account_please"
             app:layout_constraintLeft_toLeftOf="@id/login"
             app:layout_constraintTop_toTopOf="@id/login"/>
 
@@ -49,20 +51,10 @@
             android:id="@+id/btnlogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="login"
+            android:text="@string/login"
+            android:layout_marginLeft="10dp"
             android:textColor="@color/my_app_primary_variant_color"
-            android:layout_marginLeft="10dp"
-            app:layout_constraintRight_toLeftOf="@id/text2"
             app:layout_constraintLeft_toRightOf="@id/text1"
-            app:layout_constraintTop_toTopOf="@id/login" />
-        <TextView
-            android:id="@+id/text2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="here"
-            android:layout_marginLeft="10dp"
-            app:layout_constraintLeft_toRightOf="@id/btnlogin"
-            app:layout_constraintEnd_toEndOf="@id/login"
             app:layout_constraintTop_toTopOf="@id/login" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

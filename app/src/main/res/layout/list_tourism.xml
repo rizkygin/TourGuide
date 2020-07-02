@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/tourism"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/mtrl_card_spacing"
+        android:layout_marginTop="@dimen/mtrl_card_spacing"
+        android:layout_marginRight="@dimen/mtrl_card_spacing"
+        style="@style/Widget.MaterialComponents.CardView">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tourism_name"
+                android:textStyle="bold"
+                android:text="Grand Hotel Swiss Berlin"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:textSize="10dp"
+                android:layout_below="@+id/tourism_name"
+                android:id="@+id/tourism_address"
+                android:textStyle="italic"
+                android:text="Jalan farming, No 11,Kec.Seminyek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <Button
+                android:textColor="#05B39D"
+                android:textSize="8dp"
+                android:textAllCaps="false"
+                android:text="Tourism"
+                android:background="@drawable/voucher_bg"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:id="@+id/tourism_image"
+                android:layout_width="50dp"
+                android:layout_height="20dp"/>
+
+        </RelativeLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

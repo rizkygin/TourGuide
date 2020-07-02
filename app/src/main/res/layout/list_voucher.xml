@@ -64,33 +64,15 @@
 
                 <Button
                     android:id="@+id/btnGetVoucher"
-                    android:layout_width="77dp"
+                    android:layout_width="109dp"
                     android:background="@drawable/voucher_bg"
                     android:textAllCaps="false"
                     android:layout_height="31dp"
                     android:layout_marginBottom="10dp"
                     android:layout_alignRight="@id/voucherNominal"
                     android:layout_alignParentBottom="true"
-                    android:text="Redeem"
+                    android:text="Open Merchant"
                     android:textColor="#05B29D" />
-                <TextView
-                    android:id="@+id/voucherPointReq"
-                    android:textStyle="bold"
-                    android:text="70"
-                    android:layout_alignLeft="@id/nameStore"
-                    android:layout_marginBottom="21dp"
-                    android:layout_marginRight="3dp"
-                    android:textColor="#05B39D"
-                    android:layout_alignParentBottom="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <TextView
-                    android:textStyle="bold"
-                    android:text="Points"
-                    android:layout_alignBottom="@id/voucherPointReq"
-                    android:layout_toRightOf="@id/voucherPointReq"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
     </RelativeLayout>

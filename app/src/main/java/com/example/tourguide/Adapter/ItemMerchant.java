@@ -99,7 +99,9 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
         holder.mPrice.setText("Rp. " + String.valueOf(mData.get(position).getPrice()));
 
         if(!mData.get(position).getPromo().isEmpty()){
-            int value = mData.get(position).getPromo().get(0).getValue();
+            List<Promo> promos = mData.get(position).getPromo();
+            Promo promo = mData.get(position).getPromo().get(promos.size()-1);
+            int value = promo.getValue();
             int originalPrice = mData.get(position).getPrice();
             holder.mDisc.setText(String.valueOf(value));
 //            holder.mOri.setText("Original Price " + result(value,originalPrice));
@@ -119,7 +121,7 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
                     bundle.putInt("Value",mData.get(position).getPromo().get(0).getValue());
                     bundle.putString("StringEndDate",mData.get(position).getPromo().get(0).getEndDate());
                     bundle.putInt("merchantID",path);
-                    bundle.putInt("pathItem",mData.get(position).getId());
+                    bundle.putInt("pathItem",promo.getId());
 
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);
@@ -164,7 +166,7 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
 
 //        showUndoSnackbar();
         androidx.appcompat.app.AlertDialog.Builder builderItem = new AlertDialog.Builder(mContext);
-        builderItem.setMessage(String.valueOf(mData.get(position).getId() + " " + position + " " +mData.get(position).getName()));
+        builderItem.setMessage("Dou want to delete " + mData.get(position).getName()  + " ?");
         builderItem.setCancelable(true);
 
         builderItem.setPositiveButton(
@@ -177,6 +179,13 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
                         notifyItemRemoved(pos);
                     }
                 });
+        builderItem.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                notifyDataSetChanged();
+                Toast.makeText(mContext, "You cancelled your action", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         AlertDialog alert11 = builderItem.create();
         alert11.show();
@@ -203,7 +212,7 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
 
     private String result(int value, int originalPrice) {
         int result;
-        result = originalPrice - value/100 * originalPrice;
+        result = originalPrice - (value/100 * originalPrice);
         return String.valueOf(result);
     }
 
@@ -212,7 +221,7 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
         return mData.size();
     }
 
-    public void updateActivity(int adapterPosition) {
+    public void addPromo(int adapterPosition) {
         Intent intent = new Intent(mContext, AddDiscount.class);
         Bundle bundle = new Bundle();
         int item_id = mData.get(adapterPosition).getId();

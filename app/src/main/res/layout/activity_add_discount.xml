@@ -60,11 +60,19 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent">
 
+            <Button
+                android:id="@+id/backButton"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/arrow_black"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
             <TextView
                 android:id="@+id/judul"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
+                android:padding="10dp"
                 android:text="Add Discount"
                 android:textColor="#212121"
                 android:textSize="25dp"
@@ -100,12 +108,13 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/startDate"
+            <TextView
+                android:layout_marginTop="20dp"
+                android:id="@+id/helperTextSetting"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Start Date"
+                android:hint="Setting the start date"
                 app:boxCornerRadiusBottomEnd="15dp"
                 app:boxCornerRadiusBottomStart="15dp"
                 app:boxCornerRadiusTopEnd="15dp"
@@ -114,19 +123,42 @@
                 app:helperTextEnabled="true"
                 app:layout_constraintTop_toBottomOf="@id/description">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="date" />
+<!--                <com.google.android.material.textfield.TextInputEditText-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:inputType="date"/>-->
 
-            </com.google.android.material.textfield.TextInputLayout>
+            </TextView>
+            <RelativeLayout
+                app:layout_constraintTop_toBottomOf="@id/helperTextSetting"
+                android:gravity="start"
+                android:id="@+id/startDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/iconDate"
+                    android:src="@drawable/ic_date_range_black_24dp"
+                    android:layout_width="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_height="20dp"/>
+                <TextView
+                    android:id="@+id/mStartDateFix"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="15dp"
+                    android:textColor="@android:color/black"
+                    android:text="2012-12-12"
+                    android:layout_toRightOf="@id/iconDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </RelativeLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/endDate"
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/helperTextSettingEnd"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="End Date"
+                android:hint="Setting the end date"
                 app:boxCornerRadiusBottomEnd="15dp"
                 app:boxCornerRadiusBottomStart="15dp"
                 app:boxCornerRadiusTopEnd="15dp"
@@ -135,12 +167,29 @@
                 app:helperTextEnabled="true"
                 app:layout_constraintTop_toBottomOf="@id/startDate">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="date" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+            </TextView>
+            <RelativeLayout
+                android:id="@+id/endDate"
+                app:layout_constraintTop_toBottomOf="@id/helperTextSettingEnd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/iconDateEnd"
+                    android:src="@drawable/ic_date_range_black_24dp"
+                    android:layout_width="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_height="20dp"/>
+                <TextView
+                    android:id="@+id/endDateFix"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="15dp"
+                    android:textColor="@android:color/black"
+                    android:text="2012-12-12"
+                    android:layout_toRightOf="@id/iconDateEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </RelativeLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/name"

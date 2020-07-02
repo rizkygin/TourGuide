@@ -55,7 +55,10 @@ import com.example.tourguide.R;
 import android.view.Menu;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,6 +69,8 @@ public class LandingMainActivity extends AppCompatActivity implements Navigation
     private AppBarConfiguration mAppBarConfiguration;
 //    private GoogleMap mMap;
 
+
+    static String cityComplete;
     int merchantLogin = 0;
     String token;
     DrawerLayout drawerLayout;
@@ -75,7 +80,11 @@ public class LandingMainActivity extends AppCompatActivity implements Navigation
     MaterialButton searchView;
     MaterialButton mOpenMerchant;
 
+    TextView mNameUser;
+    String nameUser;
+
     private String TAG = "LandingMainActivity";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,14 +93,18 @@ public class LandingMainActivity extends AppCompatActivity implements Navigation
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Intent city = getIntent();
 
         mOpenMerchant = findViewById(R.id.openMerchant);
         searchView = findViewById(R.id.search_view);
+        cityComplete = getSharedPreferences("UserData",Context.MODE_PRIVATE).getString("SearchedCity","Search City");
+        searchView.setText(cityComplete);
+
 
         SharedPreferences sharedPreferences = getSharedPreferences("UserData",Context.MODE_PRIVATE);
         merchantLogin = sharedPreferences.getInt("merchant_id",0);
         token = sharedPreferences.getString("token","");
-
+        nameUser = sharedPreferences.getString("name","Travel Guide");
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 //        SupportMapFragment mapFragment = (SupportMapFragmenlt) getSupportFragmentManager()
@@ -115,7 +128,7 @@ public class LandingMainActivity extends AppCompatActivity implements Navigation
             @Override
             public void onClick(View v) {
                 Intent search = new Intent(LandingMainActivity.this,SearchCityActivity.class);
-                Log.d(TAG, "onClick: Clicked SeacrhView");
+
                 startActivity(search);
             }
         });
@@ -145,7 +158,14 @@ public class LandingMainActivity extends AppCompatActivity implements Navigation
 
         View navHeader = navigationView.getHeaderView(0);
         constraintLayoutNav = navHeader.findViewById(R.id.image_cover_merchant);
+        mNameUser = navHeader.findViewById(R.id.username);
+        mNameUser.setText(nameUser);
+        navigationView.getMenu().getItem(1).setVisible(false);
+        navigationView.getMenu().getItem(0).setVisible(true);
         if(merchantLogin != 0 ){
+
+            navigationView.getMenu().getItem(1).setVisible(true);
+            navigationView.getMenu().getItem(0).setVisible(false);
             mOpenMerchant.setVisibility(View.VISIBLE);
             mOpenMerchant.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -165,6 +185,11 @@ public class LandingMainActivity extends AppCompatActivity implements Navigation
 
         }
 
+
+        if(merchantLogin!=0){
+            navigationView.getMenu().getItem(1).setVisible(true);
+
+        }
 //        FragmentManager fragmentManager = getSupportFragmentManager();
 //        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 //        FragamentFilter fragamentFilter= new FragamentFilter();
@@ -202,7 +227,8 @@ public class LandingMainActivity extends AppCompatActivity implements Navigation
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+//            super.onBackPressed();
+            Log.d(TAG, "onBackPressed: no! you cant");
         }
     }
 
@@ -211,8 +237,14 @@ public class LandingMainActivity extends AppCompatActivity implements Navigation
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         item.setChecked(true);
         switch (item.getItemId()){
+            case R.id.collect:
+                startActivity(new Intent(this,RedeemActivity.class));
+                break;
+            case R.id.promoSelf:
+                startActivity(new Intent(this,CheckPromoMerchant.class));
+                break;
             case R.id.redeem:
-                Intent intent = new Intent(this,RedeemActivity.class);
+                Intent intent = new Intent(this,RedeemReward.class);
                 startActivity(intent);
                 break;
             case R.id.scan:
@@ -256,6 +288,4 @@ public class LandingMainActivity extends AppCompatActivity implements Navigation
         HomeFragment homeFragment = new HomeFragment();
         homeFragment.callApiFiltered(categoryId,LandingMainActivity.this);
     }
-
-
 }

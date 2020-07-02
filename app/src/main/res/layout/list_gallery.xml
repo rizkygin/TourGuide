@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        app:cardCornerRadius="20dp"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="350dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/imageView"
+                android:scaleType="centerCrop"
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"/>
+            <TextView
+                android:id="@+id/DescriptionT"
+                android:layout_margin="15dp"
+                android:layout_below="@+id/imageView"
+                android:gravity="center"
+                android:text="Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups."
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+            <ImageView
+                android:id="@+id/labelToFront"
+                android:translationZ="1dp"
+                android:layout_alignRight="@id/imageView"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/back_disc_fix"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

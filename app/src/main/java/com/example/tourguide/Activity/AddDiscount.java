@@ -3,6 +3,7 @@ package com.example.tourguide.Activity;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,10 +32,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.opengl.Visibility;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -46,6 +49,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +64,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
 import javax.xml.parsers.SAXParser;
@@ -75,6 +81,8 @@ import retrofit2.Response;
 
 public class AddDiscount extends AppCompatActivity implements View.OnClickListener {
 
+    int path;
+    Boolean selectedImage = false;
     String urlImage;
     private static final String IMAGE_DIRECTORY = "/demonuts";
     private static final String TAG = "AddDiscount";
@@ -83,7 +91,9 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
 
     TextView mJudul;
     ImageView imageView;
-    TextInputLayout mName,mNormalPrice,mDescription,mStartDate,mEndDate;
+    TextInputLayout mName,mNormalPrice,mDescription;
+    TextView mStartDate,mEndDate,helperStartDate,helperEndDate;
+    RelativeLayout mStartDateRelative,mEndDateRelative;
     Button mButton;
     MaterialButton mButton_save;
     ProgressBar mProggres;
@@ -103,11 +113,16 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
     String descriptionStorePromo;
     String mStartDatePromo;
     String mEndDatePromo;
+    Button  mBackButton;
     int item_id;
     int value;
     String max_cut;
     private boolean changeClicked = false;
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    Calendar now = Calendar.getInstance();
 
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,11 +130,17 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
 
         mJudul = findViewById(R.id.judul);
 
+        mBackButton = findViewById(R.id.backButton);
+
         mName = findViewById(R.id.name);
         mNormalPrice = findViewById(R.id.price);
         mDescription = findViewById(R.id.description);
-        mStartDate = findViewById(R.id.startDate);
-        mEndDate = findViewById(R.id.endDate);
+        mStartDate = findViewById(R.id.mStartDateFix);
+        mEndDate = findViewById(R.id.endDateFix);
+        helperStartDate = findViewById(R.id.helperTextSetting);
+        helperEndDate = findViewById(R.id.helperTextSettingEnd);
+        mStartDateRelative = findViewById(R.id.startDate);
+        mEndDateRelative = findViewById(R.id.endDate);
 
         mProggres = findViewById(R.id.progress);
         mButton = findViewById(R.id.btnSelectImage);
@@ -127,6 +148,18 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
 
         imageView = findViewById(R.id.picOfProfile);
 
+        path = getSharedPreferences("UserData",Context.MODE_PRIVATE).getInt("merchant_id",0);
+
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AddDiscount.this,Merchant.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("idMerchant" , path);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
         Intent intent =  getIntent();
         MODE = intent.getStringExtra("Mode");
         merchant_id = intent.getIntExtra("Merhant_id",0);
@@ -138,8 +171,13 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
             Log.d(TAG, "onCreate: Payah masa merhcant_id = 0");
         }
         if(MODE.equals("Add")){
-            mName.setHint("Set The name");
-            mJudul.setText("Add Item");
+            mName.setHint("Name");
+            mName.setHelperText("Enter the name of an item");
+            mJudul.setText("Add an Item");
+            helperEndDate.setVisibility(View.GONE);
+            helperStartDate.setVisibility(View.GONE);
+            mStartDateRelative.setVisibility(View.GONE);
+            mEndDateRelative.setVisibility(View.GONE);
             mStartDate.setVisibility(View.GONE);
             mEndDate.setVisibility(View.GONE);
             mButton_save.setText("SAVE");
@@ -161,12 +199,16 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
             mName.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER); //Sets input type to Number Only
             mNormalPrice.setHint("Max Cutting Price"); //Max Cutting Price
             mDescription.getEditText().setText(editTextDesscription);
-            mStartDate.setHint("Enter start Promo");
+//            mStartDate.setHint("Enter start Promo");
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//            System.out.println(date.format(formatter));
+//            Calendar calendar = Calendar.getInstance();
             Calendar calendar = Calendar.getInstance();
+            mStartDate.setText(formatter.format(calendar.getTime()));
             final int year = calendar.get(Calendar.YEAR);
             final int month = calendar.get(Calendar.MONTH);
             final int day = calendar.get(Calendar.DAY_OF_MONTH);
-            mStartDate.getEditText().setOnClickListener(new View.OnClickListener() {
+            mStartDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -177,17 +219,20 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
                             month = month+1;
                             String date = year+"-"+month+"-"+dayOfMonth;
                             startDate = date;
-                            mStartDate.getEditText().setText(startDate);
+//                            mStartDate.getEditText().setText(startDate);
+                            mStartDate.setText(startDate);
                         }
                     }, year, month, day);
                     datePickerDialog.show();
                 }
             });
-            mEndDate.setHint("Enter end of Promo");
+//            mEndDate.setHint("Enter end of Promo");
+//            mEndDate.setText(String.valueOf(Calendar.getInstance().getTime()));
+            mStartDate.setText(formatter.format(calendar.getTime()));
             final int yearEnd = calendar.get(Calendar.YEAR);
             final int monthEnd = calendar.get(Calendar.MONTH);
             final int dayEnd = calendar.get(Calendar.DAY_OF_MONTH);
-            mEndDate.getEditText().setOnClickListener(new View.OnClickListener() {
+            mEndDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                     public void onClick(View v) {
                     DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -198,7 +243,8 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
                             month = month+1;
                             String date = year+"-"+month+"-"+dayOfMonth;
                             endDate = date;
-                            mEndDate.getEditText().setText(endDate);
+//                            mEndDate.getEditText().setText(endDate);
+                            mEndDate.setText(endDate);
                         }
                     }, yearEnd, monthEnd, dayEnd);
                     datePickerDialog.show();
@@ -207,9 +253,10 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
             mButton_save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mButton_save.setClickable(false);
                     if(storePromoValidate()){
                         storePromo();
+                        mButton_save.setClickable(false);
+
                     }
                 }
             });
@@ -238,6 +285,10 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
                     });
 
             mButton.setOnClickListener(this);
+            helperEndDate.setVisibility(View.GONE);
+            helperStartDate.setVisibility(View.GONE);
+            mStartDateRelative.setVisibility(View.GONE);
+            mEndDateRelative.setVisibility(View.GONE);
             mStartDate.setVisibility(View.GONE);
             mEndDate.setVisibility(View.GONE);
             if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -268,29 +319,50 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
 
 
     private boolean storePromoValidate() {
+        mProggres.setVisibility(View.VISIBLE);
+
         this.max_cut = mNormalPrice.getEditText().getText().toString();
-        this.value = Integer.parseInt(mName.getEditText().getText().toString());
+        if(mName.getEditText().toString()!=null){
+            this.value = Integer.parseInt(mName.getEditText().getText().toString());
+        }
         this.descriptionStorePromo = mDescription.getEditText().getText().toString();
-        this.mStartDatePromo = mStartDate.getEditText().getText().toString();
-        this.mEndDatePromo = mEndDate.getEditText().getText().toString();
+        this.mStartDatePromo = mStartDate.getText().toString();
+        this.mEndDatePromo = mEndDate.getText().toString();
         if(max_cut.isEmpty()){
             mNormalPrice.setError("Fill this field please!");
+            mProggres.setVisibility(View.GONE);
+
             return false;
         }
-        if(mName.getEditText().getText().toString().isEmpty()){//max cut
+        if(mName.getEditText().getText().toString().isEmpty()){
             mName.setError("Fill this field please!");
+            mProggres.setVisibility(View.GONE);
+
+            return false;
+        }
+        if(value > 100){
+            mName.setError("Enter under 100 % value");
+            mProggres.setVisibility(View.GONE);
+
             return false;
         }
         if(descriptionStorePromo.isEmpty()){//max cut
             mDescription.setError("Fill this field please!");
+            mProggres.setVisibility(View.GONE);
+
             return false;
         }
-        if(mStartDatePromo.isEmpty()){//max cut
-            mStartDate.setError("Fill this field please!");
+        if(mStartDatePromo.isEmpty()){
+//            mStartDate.setError("Fill this field please!");
+            mProggres.setVisibility(View.GONE);
+
             return false;
         }
-        if(mEndDatePromo.isEmpty()){//max cut
-            mEndDate.setError("Fill this field please!");
+        if(mEndDatePromo.equals(String.valueOf(formatter.format(Calendar.getInstance().getTime())))){//max cut
+//            mEndDate.setError("Fill this field please!");
+            helperEndDate.setText("Are you sure to setting on this date ?");
+            mProggres.setVisibility(View.GONE);
+
             return false;
         }
         return true;
@@ -315,9 +387,14 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
         call.enqueue(new Callback<JsonResponse>() {
             @Override
             public void onResponse(Call<JsonResponse> call, Response<JsonResponse> response) {
+                mProggres.setVisibility(View.GONE);
                 Toast.makeText(AddDiscount.this, "Success to add Promo", Toast.LENGTH_SHORT).show();
                 Intent back = new Intent(AddDiscount.this,Merchant.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("idMerchant" , path);
+                back.putExtras(bundle);
                 startActivity(back);
+
             }
 
             @Override
@@ -333,18 +410,35 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
         this.mDescriptionType = mDescription.getEditText().getText().toString();
         this.mPrice = mNormalPrice.getEditText().getText().toString();
 
+
+        if(!selectedImage){
+            mButton.setTextColor(getResources().getColor(R.color.design_default_color_error));
+            Drawable cant = getDrawable(R.drawable.cant_go);
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            imageView.setImageDrawable(cant);
+            mProggres.setVisibility(View.GONE);
+            return false;
+        }
         if(mNameType.isEmpty()){
             mName.setError("Is Not Valid Email");
+            mProggres.setVisibility(View.GONE);
+
             return false;
         }
         if(mDescriptionType.isEmpty()){
             mDescription.setError("Please Fill The Field");
+            mProggres.setVisibility(View.GONE);
+
             return false;
         }
         if(mPrice.isEmpty()){
             mNormalPrice.setError("You cant set item to free");
+            mProggres.setVisibility(View.GONE);
+
             return false;
         }
+
+        mProggres.setVisibility(View.GONE);
 
         return true;
 
@@ -354,14 +448,15 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
 
 //            Log.d(TAG, "uploadImage: Uri " + uriUpdateItem);
             try {
+                requestFile =
+                        RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(imageUrl));
                 if(uri != null){
                     //FileUtil for get from gallery
                     originalFile =  FileUtil.from(AddDiscount.this,uri);
                      requestFile =
                             RequestBody.create(MediaType.parse("multipart/form-data"), originalFile);
                 }
-                requestFile =
-                        RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(imageUrl));
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -412,7 +507,10 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
                                 "OK",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        Intent intent = new Intent(AddDiscount.this,LandingMainActivity.class);
+                                        Intent intent = new Intent(AddDiscount.this,Merchant.class);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putInt("idMerchant" , path);
+                                        intent.putExtras(bundle);
                                         startActivity(intent);
                                         dialog.cancel();
                                     }
@@ -467,16 +565,18 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
                             AddDiscount.this, imageUrl);
                     is = getContentResolver().openInputStream(data.getData());
                     mButton.setText("Change Image");
+
+                    selectedImage = true;
                     imageView.setImageBitmap(bitmap);
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            else{
-                selectedImagePath  = ImageFilePath.getPath(
-                        AddDiscount.this, imageUrl);
-            }
+//            else{
+//                selectedImagePath  = ImageFilePath.getPath(
+//                        AddDiscount.this, imageUrl);
+//            }
         }
     }
 
@@ -583,7 +683,10 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
                             "OK",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    Intent intent = new Intent(AddDiscount.this,LandingMainActivity.class);
+                                    Intent intent = new Intent(AddDiscount.this,Merchant.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putInt("idMerchant" , path);
+                                    intent.putExtras(bundle);
                                     startActivity(intent);
                                     dialog.cancel();
                                 }
@@ -659,7 +762,6 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
             case R.id.btnSelectImage:
                 // code for button when user clicks buttonOne.
                 Log.d(TAG, "onClick: Clicked");
-
                 changeClicked = true;
                 Intent i = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -682,5 +784,10 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        //nothing
     }
 }

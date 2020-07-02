@@ -9,6 +9,9 @@ import com.example.tourguide.Adapter.RecyclerViewRecommendedAdapter;
 import com.example.tourguide.R;
 import com.google.android.material.button.MaterialButton;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,6 +31,7 @@ public class SearchCityActivity extends AppCompatActivity {
     RecyclerCity recyclerCity;
 
     MaterialButton mBackButton;
+    MaterialButton mBtnCurrent;
     EditText mActvCity;
     RecyclerView recyclerView;
     List<String> mList=  new ArrayList<>();
@@ -39,6 +43,29 @@ public class SearchCityActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.rcCitySC);
         mActvCity = findViewById(R.id.actvCity);
         mBackButton = findViewById(R.id.btnBackSC);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent city = new Intent(SearchCityActivity.this, LandingMainActivity.class);
+//                CityHelper cityhelper = new CityHelper(mData.get(position));
+                city.putExtra("SearchedCity","Search here");
+                startActivity(city);
+            }
+        });
+        mBtnCurrent = findViewById(R.id.btnCurrent);
+
+        mBtnCurrent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent city = new Intent(SearchCityActivity.this, LandingMainActivity.class);
+//                CityHelper cityhelper = new CityHelper(mData.get(position));
+                city.putExtra("SearchedCity","DI Yogyakarta");
+                SharedPreferences.Editor editor = getSharedPreferences("UserData", Context.MODE_PRIVATE).edit();
+                editor.putString("SearchedCity", "DI Yogyakarta");
+                editor.commit();
+                startActivity(city);
+            }
+        });
 
         mActvCity.addTextChangedListener(new TextWatcher() {
             @Override
@@ -71,97 +98,99 @@ public class SearchCityActivity extends AppCompatActivity {
     }
 
     private void addCity() {
-        mList.add("Ambon");
-        mList.add("Balikpapan");
-        mList.add("BANDUNG");
-        mList.add("Banda Aceh");
-        mList.add("Bandar Lampung");
-        mList.add("Bandung");
-        mList.add("Banjar");
-        mList.add("Banjarbaru");
-        mList.add("Banjarmasin");
-        mList.add("Batam");
-        mList.add("Batu");
-        mList.add("Bau-Bau");
-        mList.add("Bekasi");
-        mList.add("Bima");
-        mList.add("Binjai");
-        mList.add("Blitar");
-        mList.add("Bogor");
-        mList.add("Bukittinggi");
-        mList.add("Cilegon");
-        mList.add("Cimahi");
-        mList.add("Cirebon");
-        mList.add("Depok");
-        mList.add("Dumai");
-        mList.add("Gorontalo");
-        mList.add("Gunungsitoli");
-        mList.add("Jakarta Barat");
-        mList.add("Jakarta Pusat");
-        mList.add("Jakarta Selatan");
-        mList.add("Jakarta Utara");
-        mList.add("Jambi");
-        mList.add("Jayapura");
-        mList.add("Kediri");
-        mList.add("Kendari");
-        mList.add("Kupang");
-        mList.add("Langsa");
-        mList.add("Lhokseumawe");
-        mList.add("Lubuklinggau");
-        mList.add("Madiun");
-        mList.add("Magelang");
-        mList.add("Makassar");
-        mList.add("Malang");
-        mList.add("Manado");
-        mList.add("Metro");
-        mList.add("Mojokerto");
-        mList.add("Padang");
-        mList.add("Padangpanjang");
-        mList.add("Padangsidempuan");
-        mList.add("Pagar Alam");
-        mList.add("Palangkaraya");
-        mList.add("Pangkalan Bun");
-        mList.add("Palembang");
-        mList.add("Palopo");
-        mList.add("Palu");
-        mList.add("Pangkal Pinang");
-        mList.add("Parepare");
-        mList.add("Pariaman");
-        mList.add("Pasuruan");
-        mList.add("Payakumbuh");
-        mList.add("Pekalongan");
-        mList.add("Pekanbaru");
-        mList.add("Pematangsiantar");
-        mList.add("Pontianak");
-        mList.add("Prabumulih");
-        mList.add("Probolinggo");
-        mList.add("Sabang");
-        mList.add("Salatiga");
-        mList.add("Samarinda");
-        mList.add("Sawahlunto");
-        mList.add("Semarang");
-        mList.add("Serang");
-        mList.add("Sibolga");
-        mList.add("Singkawang");
-        mList.add("Solok");
-        mList.add("Sorong");
-        mList.add("Sukabumi");
-        mList.add("Sungai Penuh");
-        mList.add("Surabaya");
-        mList.add("Surakarta");
-        mList.add("Tangerang Selatan");
-        mList.add("Tangerang");
-        mList.add("Tanjungbalai");
-        mList.add("Tanjung Pinang");
-        mList.add("Tarakan");
-        mList.add("Tasikmalaya");
-        mList.add("Tebing Tinggi");
-        mList.add("Tegal");
-        mList.add("Ternate");
-        mList.add("Tidore Kepulauan");
-        mList.add("Tomohon");
-        mList.add("Tual");
-        mList.add("Yogyakarta");
+//        mList.add("Ambon");
+        mList.add("Bali");
+//        mList.add("Balikpapan");
+//        mList.add("BANDUNG");
+//        mList.add("Banda Aceh");
+//        mList.add("Bandar Lampung");
+//        mList.add("Bandung");
+//        mList.add("Banjar");
+//        mList.add("Banjarbaru");
+//        mList.add("Banjarmasin");
+//        mList.add("Batam");
+//        mList.add("Batu");
+//        mList.add("Bau-Bau");
+//        mList.add("Bekasi");
+//        mList.add("Bima");
+//        mList.add("Binjai");
+//        mList.add("Blitar");
+//        mList.add("Bogor");
+//        mList.add("Bukittinggi");
+//        mList.add("Cilegon");
+//        mList.add("Cimahi");
+//        mList.add("Cirebon");
+//        mList.add("Depok");
+//        mList.add("Dumai");
+//        mList.add("Gorontalo");
+//        mList.add("Gunungsitoli");
+//        mList.add("Jakarta Barat");
+//        mList.add("Jakarta Pusat");
+//        mList.add("Jakarta Selatan");
+//        mList.add("Jakarta Utara");
+//        mList.add("Jambi");
+//        mList.add("Jayapura");
+//        mList.add("Kediri");
+//        mList.add("Kendari");
+//        mList.add("Kupang");
+//        mList.add("Langsa");
+//        mList.add("Lhokseumawe");
+//        mList.add("Lubuklinggau");
+//        mList.add("Madiun");
+//        mList.add("Magelang");
+//        mList.add("Makassar");
+//        mList.add("Malang");
+//        mList.add("Manado");
+//        mList.add("Metro");
+//        mList.add("Mojokerto");
+//        mList.add("Padang");
+//        mList.add("Padangpanjang");
+//        mList.add("Padangsidempuan");
+//        mList.add("Pagar Alam");
+//        mList.add("Palangkaraya");
+//        mList.add("Pangkalan Bun");
+//        mList.add("Palembang");
+//        mList.add("Palopo");
+//        mList.add("Palu");
+//        mList.add("Pangkal Pinang");
+//        mList.add("Parepare");
+//        mList.add("Pariaman");
+//        mList.add("Pasuruan");
+//        mList.add("Payakumbuh");
+//        mList.add("Pekalongan");
+//        mList.add("Pekanbaru");
+//        mList.add("Pematangsiantar");
+//        mList.add("Pontianak");
+//        mList.add("Prabumulih");
+//        mList.add("Probolinggo");
+//        mList.add("Sabang");
+//        mList.add("Salatiga");
+//        mList.add("Samarinda");
+//        mList.add("Sawahlunto");
+//        mList.add("Semarang");
+//        mList.add("Serang");
+//        mList.add("Sibolga");
+//        mList.add("Singkawang");
+//        mList.add("Solok");
+//        mList.add("Sorong");
+//        mList.add("Sukabumi");
+//        mList.add("Sungai Penuh");
+//        mList.add("Surabaya");
+//        mList.add("Surakarta");
+//        mList.add("Tangerang Selatan");
+//        mList.add("Tangerang");
+//        mList.add("Tanjungbalai");
+//        mList.add("Tanjung Pinang");
+//        mList.add("Tarakan");
+//        mList.add("Tasikmalaya");
+//        mList.add("Tebing Tinggi");
+//        mList.add("Tegal");
+//        mList.add("Ternate");
+//        mList.add("Tidore Kepulauan");
+//        mList.add("Tomohon");
+//        mList.add("Tual");
+        mList.add("DI Yogyakarta");
+        mList.add("Anywhere");
     }
 
     private void filter(String text){

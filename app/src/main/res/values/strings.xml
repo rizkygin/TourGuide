@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Tour Guide</string>
+    <string name="app_name">Travel Guide</string>
 
     <string name="title_activity_landing">Map</string>
     <string name="title_activity_landing_main">LandingMainActivity</string>
@@ -17,6 +17,15 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
     <string name="title_activity_maps">Map</string>
+    <string name="mapbox_access_token">MAPBOX_ACCESS_TOKEN</string>
+    <string name="selected_place_info">Selected location information:\n%1$s</string>
+
+    <string name="go_to_picker_activity">Go to place picker activity</string>
+    <string name="access_token">pk.eyJ1Ijoicml6a3lnaW43IiwiYSI6ImNrYmdrMjE0eDE2N20ycG81YWQzdjR0MmQifQ.AZ8yDxM2n6XXUVKzu9n8dQ</string>
+    <string name="tutorial"><u>tutorial</u></string>
+    <string name="travel_guide_reward"><![CDATA[TRAVEL GUIDE & REWARD]]></string>
+    <string name="already_have_account_please">Already have account, ? Please</string>
+    <string name="login"><u>login here</u></string>
     <string-array name="occupation">
         <item>Indonesia</item>
         <item>Malaysia</item>

@@ -1,12 +1,17 @@
 package com.example.tourguide.service;
 
 import com.example.tourguide.JsonPlaceHolderApi;
+import com.example.tourguide.model.GalleryResponse;
 import com.example.tourguide.model.MerchantIndex;
 import com.example.tourguide.model.MerchantItemStore;
 import com.example.tourguide.model.MerchantItemUpdate;
 import com.example.tourguide.model.MerchantShow;
+import com.example.tourguide.model.PromoGetSelf;
 import com.example.tourguide.model.PromoSelf;
+import com.example.tourguide.model.RedeemResponses;
 import com.example.tourguide.model.RegisterdUser;
+import com.example.tourguide.model.ScanResponses;
+import com.example.tourguide.model.TourismIndex;
 import com.example.tourguide.model.User;
 
 import java.util.List;
@@ -41,6 +46,7 @@ public interface UserClient {
     Call<RegisterdUser> registration(@Field("name") String name,
                                      @Field("email") String email,
                                      @Field("password") String password,
+                                     @Field("phone") String phone,
                                      @Field("password_confirmation") String password_confirmation);
 
 
@@ -48,7 +54,8 @@ public interface UserClient {
     Call<MerchantIndex> recomendedplace(@Header("Authorization")String token);
 
     @GET("merchant/{id}")
-    Call<MerchantShow> merchantShow(@Path("id") int id,@Header("Authorization")String token);
+    Call<MerchantShow> merchantShow(@Path("id") int id,
+                                    @Header("Authorization")String token);
 
     @Multipart
     @POST("items")
@@ -86,11 +93,56 @@ public interface UserClient {
     @GET("promo")
     Call<PromoSelf> getAllPromo(@Header("Authorization")String token);
 
+    @GET("reward")
+    Call<RewardShowAll> getReward(@Header("Authorization")String token);
+
     @GET("qr/generate/{id}")
     Call<GenerateQR> generateQR(@Header("Authorization")String token,
                                 @Path("id") int id);
 
-    @GET("/qr/scan/{token}")
-    Call<JsonResponse> scanQrCode(@Header("Authorization")String tokenLogin,
-                                  @Path("token") String token);
+    @GET("qr/scan/{token}")
+    Call<ScanResponses> scanQrCode(@Header("Authorization")String tokenLogin,
+                                   @Path("token") String token);
+
+    @GET("getpromo")
+    Call<PromoGetSelf> promoCheck(@Header("Authorization")String token);
+
+    @FormUrlEncoded
+    @POST("promo/{id}")
+    Call<JsonResponse> promoUpdate(@Header("Authorization")String token,
+                                   @Field("value") String value,
+                                   @Field("description") String description,
+                                   @Field("category") String category,
+                                   @Field("max_cut") String max_cut,
+                                   @Field("start_time") String start_time,
+                                   @Field("end_time") String end_time,
+                                   @Path("id") String id,
+                                   @Field("_method") String _method);
+    @DELETE("promo/{id}")
+    Call<JsonResponse> destroyPromo(@Header("Authorization")String token,
+                                    @Path("id") int id);
+    @Multipart
+    @POST("merchant/update")
+    Call<JsonResponse> updateMerchant(@Header("Authorization") String token,
+                                      @Part("address")RequestBody address,
+                                      @Part("name")RequestBody name,
+                                      @Part("latitude")RequestBody latitude,
+                                      @Part("longitude")RequestBody longitude,
+                                      @Part("description")RequestBody description,
+                                      @Part MultipartBody.Part photo,
+                                      @Part("_method") RequestBody method);
+    @GET("tourism")
+    Call<TourismIndex> tourismIndex(@Header("Authorization") String token);
+
+    @GET("tourism-city/{id}")
+    Call<TourismIndex> tourismIndexCity(@Header("Authorization") String token,
+                                       @Path("id") int id);
+
+    @GET("tourism-gallery/{id}")
+    Call<GalleryResponse> tourismIndexing(@Header("Authorization") String token,
+                                          @Path("id") int id);
+
+    @GET("reward-redeem/{id}")
+    Call<RedeemResponses> redeem(@Header("Authorization")String token,
+                                 @Path("id") int id);
 }

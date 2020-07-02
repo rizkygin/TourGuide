@@ -16,7 +16,9 @@ import com.example.tourguide.service.Api;
 import com.example.tourguide.service.GenerateQR;
 import com.example.tourguide.service.GetBitmapInterface;
 import com.example.tourguide.service.GlideApp;
+import com.example.tourguide.service.GlideRequests;
 import com.example.tourguide.service.Screenshot;
+import com.example.tourguide.service.SvgSoftwareLayerSetter;
 import com.google.android.material.button.MaterialButton;
 
 import android.content.Context;
@@ -52,7 +54,7 @@ public class SpesificProduct extends AppCompatActivity {
     Bitmap bitmapQr;
     String uriImage;
     private RequestBuilder<PictureDrawable> requestBuilder;
-    private static final String IMAGE_DIRECTORY = "/demonuts";
+    private static final String IMAGE_DIRECTORY = "/tourGuide";
     GetBitmapInterface getBitmapInterfaceClick;
     private static final String TAG = "SpecificProduct";
     private String token;
@@ -64,6 +66,7 @@ public class SpesificProduct extends AppCompatActivity {
     Button mBackButton;
     private ImageView mImage,mQrCodeImage;
     private TextView mEndDate,mDisc,mDescriptionText,mAddressText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +84,18 @@ public class SpesificProduct extends AppCompatActivity {
         Intent intent = getIntent();
 
 
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SpesificProduct.this, Merchant.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("idMerchant" , intent.getIntExtra("merchantID",0));
+
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
         SharedPreferences preferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         token = preferences.getString("token", "");
 
@@ -98,7 +113,25 @@ public class SpesificProduct extends AppCompatActivity {
                 .into(mImage);
 
         mSaveButton.setVisibility(View.GONE);
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: Clicked Button Save");
+
+                Bitmap save = Screenshot.takesScreenshotOfRootView(mQrCodeImage);
+
+                uriImage = saveImage(save);
+                Log.d(TAG, "onClick: bitmapQr " + bitmapQr);
+
+                Toast.makeText(SpesificProduct.this, "Qr Code Success have been saved", Toast.LENGTH_SHORT).show();
+            }
+        });
+        requestBuilder = GlideApp.with(this)
+                .as(PictureDrawable.class)
+                .placeholder(R.drawable.chaced_foreground)
+                .listener(new SvgSoftwareLayerSetter());
         callAPI();
+
 
 
 //        getBitmapInterfaceClick.setBitmap();
@@ -111,6 +144,15 @@ public class SpesificProduct extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+    private void loadNet(Uri uri) {
+        requestBuilder.load(uri).into(mQrCodeImage);
+    }
+
     public String saveImage(Bitmap myBitmap) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
@@ -150,27 +192,14 @@ public class SpesificProduct extends AppCompatActivity {
                     urlQR = response.body().getResult();
                     Uri uri = Uri.parse(urlQR);
                     Log.d(TAG, "onResponse: " + urlQR);
-
-
+//                    loadNet(uri);
                     GlideApp.with(SpesificProduct.this)
                             .load(uri)
-                            .apply(RequestOptions.centerCropTransform())
+//                            .apply(RequestOptions.centerCropTransform())
                             .into(mQrCodeImage);
 
                     mSaveButton.setVisibility(View.VISIBLE);
-                    mSaveButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Log.d(TAG, "onClick: Clicked Button Save");
 
-                            Bitmap save = Screenshot.takesScreenshotOfRootView(mQrCodeImage);
-
-                            uriImage = saveImage(save);
-                            Log.d(TAG, "onClick: bitmapQr " + bitmapQr);
-
-                            Toast.makeText(SpesificProduct.this, "Qr Code Success have been saved", Toast.LENGTH_SHORT).show();
-                        }
-                    });
                 }
             }
 
@@ -179,5 +208,10 @@ public class SpesificProduct extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        //nothing
     }
 }

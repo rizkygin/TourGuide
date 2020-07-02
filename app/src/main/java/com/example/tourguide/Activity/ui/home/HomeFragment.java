@@ -34,15 +34,19 @@ import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
 import com.example.tourguide.Activity.FragamentFilter;
+import com.example.tourguide.Activity.GalleryActivity;
 import com.example.tourguide.Activity.LandingMainActivity;
 import com.example.tourguide.Activity.ListenerFilterRecommended;
 import com.example.tourguide.Activity.Merchant;
 import com.example.tourguide.Activity.SignInActivity;
 import com.example.tourguide.Adapter.Recommended;
 import com.example.tourguide.Adapter.RecyclerViewRecommendedAdapter;
+import com.example.tourguide.Adapter.TourismAdapter;
 import com.example.tourguide.R;
 import com.example.tourguide.model.DataMerchant;
 import com.example.tourguide.model.MerchantIndex;
+import com.example.tourguide.model.TourismIndex;
+import com.example.tourguide.model.TourismIndexGet;
 import com.example.tourguide.service.Api;
 import com.example.tourguide.service.FetchURL;
 import com.example.tourguide.service.JsonParsers;
@@ -99,6 +103,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     private BottomSheetBehavior bottomSheetBehavior;
+    private List<TourismIndexGet> tourism;
 
     static AdapterListenerFilter listenerFilter;
     ListenerFilterRecommended listener;
@@ -124,14 +129,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     static LatLng destination;
 
     private List<Polyline> polylines=null;
+    static String cityComplete;
 
     private static GoogleMap mMap;
     private GoogleMap map;
     private boolean isReady = false;
     List<Recommended> mList = new ArrayList<>();
-    private  List<Marker> mMarker = new ArrayList<Marker>();
+    List<TourismIndexGet> mListTourism = new ArrayList<>();
+    private  static List<Marker> mMarker = new ArrayList<Marker>();
     double lat = 0.0;
     double lon = 0.0;
+    SharedPreferences preferences;
     private static ProgressBar progressBar;
 
 
@@ -164,7 +172,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         progressBar = root.findViewById(R.id.progressBar);
 
         progressBar.setVisibility(View.GONE);
-        SharedPreferences preferences = getContext().getSharedPreferences("UserData", Context.MODE_PRIVATE);
+        preferences = getContext().getSharedPreferences("UserData", Context.MODE_PRIVATE);
         token = preferences.getString("token", "");
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
@@ -172,8 +180,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
 
 //        RecyclerViewRecommendedAdapter recyclerViewRecommendedAdapter = new RecyclerViewRecommendedAdapter(getContext(), mList);
-        callApi();
 
+        cityComplete = getContext().getSharedPreferences("UserData",Context.MODE_PRIVATE).getString("SearchedCity","Search City");
+
+        if(!cityComplete.isEmpty()){
+            if(cityComplete.equals("Bali")){
+                callApiFilteredByCity(2,getContext());
+            }else if (cityComplete.equals("DI Yogyakarta")){
+                callApiFilteredByCity(1,getContext());
+            }else  {
+                callApi();
+            }
+        }else {
+            cityComplete = "Search Here";
+            callApi();
+        }
         return root;
     }
 
@@ -227,6 +248,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
                         myLocation=location;
                         lastLocation=new LatLng(location.getLatitude(),location.getLongitude());
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString("latitude", String.valueOf(lastLocation.latitude));
+                        editor.putString("longitude", String.valueOf(lastLocation.longitude));
+                        editor.commit();
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
                                 lastLocation, 16f);
                         currentLat = location.getLatitude();
@@ -252,21 +277,22 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
 //
     public void callApiFiltered(final int categoryId, final Context mContext){
-        mList = new ArrayList<>();
-        mMarker = new ArrayList<Marker>();
-        mMap.clear();
-        Call<MerchantIndex> call = Api.getClient().recomendedplace("Bearer " + token);
-        call.enqueue(new Callback<MerchantIndex>() {
-            @Override
-            public void onResponse(Call<MerchantIndex> call, Response<MerchantIndex> response) {
-                progressBar.setVisibility(View.VISIBLE);
+        if(categoryId != 4 && categoryId!=5) {
+            mList = new ArrayList<>();
+            mMarker = new ArrayList<Marker>();
+            mMap.clear();
+            Call<MerchantIndex> call = Api.getClient().recomendedplace("Bearer " + token);
+            call.enqueue(new Callback<MerchantIndex>() {
+                @Override
+                public void onResponse(Call<MerchantIndex> call, Response<MerchantIndex> response) {
+                    progressBar.setVisibility(View.VISIBLE);
 
-                Log.d(TAG, response.message());
-                if (!response.isSuccessful()) {
-                    Log.d(TAG, "Code :" + response.code());
-                    return;
-                }
-                List<Recommended> list = response.body().getData();
+                    Log.d(TAG, response.message());
+                    if (!response.isSuccessful()) {
+                        Log.d(TAG, "Code :" + response.code());
+                        return;
+                    }
+                    List<Recommended> list = response.body().getData();
                     for (Recommended recommended : list) {
                         LatLng position = new LatLng(Double.parseDouble(recommended.getLatitude()), Double.parseDouble(recommended.getLongitude()));
 
@@ -300,42 +326,224 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         }
 
                     }
-                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
 //                        start=new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
-                        destination = new LatLng(marker.getPosition().latitude,marker.getPosition().longitude);
+                            destination = new LatLng(marker.getPosition().latitude,marker.getPosition().longitude);
 //                        findRoutes(lastLocation,destination);
-                        Intent intent = new Intent(mContext, Merchant.class);
+                            Intent intent = new Intent(mContext, Merchant.class);
 
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("idMerchant" , Integer.parseInt(marker.getSnippet()));
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("idMerchant" , Integer.parseInt(marker.getSnippet()));
 
-                        intent.putExtras(bundle);
-                        mContext.startActivity(intent);
-                        return false;
-                    }
-                });
+                            intent.putExtras(bundle);
+                            mContext.startActivity(intent);
+                            return false;
+                        }
+                    });
 
-                RecyclerViewRecommendedAdapter recyclerViewRecommendedAdapter = new RecyclerViewRecommendedAdapter(mContext, mList);
+                    RecyclerViewRecommendedAdapter recyclerViewRecommendedAdapter = new RecyclerViewRecommendedAdapter(mContext, mList,categoryId);
 //                Log.d("testAdapter", "Context Home " + mList.get(1).getId());
 
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                recyclerView.setAdapter(recyclerViewRecommendedAdapter);
-                progressBar.setVisibility(View.GONE);
-                Log.d(TAG, "responses :" + mList.size());
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    recyclerView.setAdapter(recyclerViewRecommendedAdapter);
+                    progressBar.setVisibility(View.GONE);
+                    Log.d(TAG, "responses :" + mList.size());
 
 
-            }
+                }
 
-            @Override
-            public void onFailure(Call<MerchantIndex> call, Throwable t) {
+                @Override
+                public void onFailure(Call<MerchantIndex> call, Throwable t) {
 
-            }
-        });
+                }
+            });
+        }
+        else if (categoryId == 4){
+            Call<TourismIndex> call = Api.getClient().tourismIndex("Bearer " + token);
+            call.enqueue(new Callback<TourismIndex>() {
+                @Override
+                public void onResponse(Call<TourismIndex> call, Response<TourismIndex> response) {
+                    if(response.isSuccessful()){
+                        mListTourism = new ArrayList<>();
+                        mMarker = new ArrayList<Marker>();
+                        mMap.clear();
+                        tourism = new ArrayList<>();
+
+                        List<TourismIndexGet> tourisms = response.body().getData();
+                        for(TourismIndexGet tourism : tourisms){
+                            LatLng position = new LatLng(tourism.getLatitude(), tourism.getLongitude());
+
+                            mListTourism.add(new TourismIndexGet(tourism.getId(),
+                                    tourism.getCity_id(),
+                                    tourism.getGallery_id(),
+                                    tourism.getName(),
+                                    tourism.getDescription(),
+                                    tourism.getPhoto(),
+                                    tourism.getAddress(),
+                                    tourism.getLatitude(),
+                                    tourism.getLongitude(),
+                                    tourism.getCreated_at(),
+                                    tourism.getUpdated_at()));
+                            Marker marker = mMap.addMarker(new MarkerOptions()
+                                    .position(position).title(tourism.getName())
+                                    .snippet(String.valueOf(tourism.getId()))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.tourism_fix))
+                                    .title(tourism.getName()));
+                            mMarker.add(marker);
+                        }
+                        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                            @Override
+                            public boolean onMarkerClick(Marker marker) {
+//                        start=new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
+                                destination = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+//                        findRoutes(lastLocation,destination);
+
+
+//                                Toast.makeText(getContext(), "Is not Implemented yet", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(mContext, GalleryActivity.class);
+
+                                Bundle bundle = new Bundle();
+                                bundle.putInt("idTourism", Integer.parseInt(marker.getSnippet()));
+
+                                intent.putExtras(bundle);
+                                mContext.startActivity(intent);
+                                return false;
+                            }
+                        });
+                        TourismAdapter tourismAdapter = new TourismAdapter(mContext, mListTourism);
+//                Log.d("testAdapter", "Context Home " + mList.get(1).getId());
+
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        recyclerView.setAdapter(tourismAdapter);
+                        progressBar.setVisibility(View.GONE);
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<TourismIndex> call, Throwable t) {
+
+                }
+            });
+        }
+        else{
+            Call<MerchantIndex> call = Api.getClient().recomendedplace("Bearer " + token);
+            call.enqueue(new Callback<MerchantIndex>() {
+                @Override
+                public void onResponse(Call<MerchantIndex> call, Response<MerchantIndex> response) {
+                    progressBar.setVisibility(View.VISIBLE);
+
+                    Log.d(TAG, response.message());
+                    if (!response.isSuccessful()) {
+                        Log.d(TAG, "Code :" + response.code());
+                        return;
+                    }
+//                String responses = response.body().toString();
+//                try {
+//                    display(responses);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+                    List<Recommended> list = response.body().getData();
+                    for (Recommended recommended : list) {
+                        LatLng position = new LatLng(Double.parseDouble(recommended.getLatitude()), Double.parseDouble(recommended.getLongitude()));
+
+//                    Log.d(TAG, String.valueOf(recommended.getId()));
+
+                        mList.add(new Recommended(recommended.getName(), recommended.getAddress(), recommended.getStatus(), recommended.getId(),recommended.getCategory_id()));
+                        if(recommended.getCategory_id() == 1){ //If Merhcant is Shop
+                            Marker marker = mMap.addMarker(new MarkerOptions()
+                                    .position(position).title(recommended.getName())
+                                    .snippet(String.valueOf(recommended.getId()))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.shop_marker))
+                                    .title(recommended.getName()));
+                            mMarker.add(marker);
+
+                        }else if(recommended.getCategory_id()== 2){//If Hotel is Shop
+                            Marker marker = mMap.addMarker(new MarkerOptions()
+                                    .position(position).title(recommended.getName())
+                                    .snippet(String.valueOf(recommended.getId()))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.hotel_marker))
+                                    .title(recommended.getName()));
+                            mMarker.add(marker);
+
+                        }else if(recommended.getCategory_id()==3 ){//If Resto is Shop
+                            Marker marker = mMap.addMarker(new MarkerOptions()
+                                    .position(position).title(recommended.getName())
+                                    .snippet(String.valueOf(recommended.getId()))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.resto_marker))
+                                    .title(recommended.getName()));
+                            mMarker.add(marker);
+
+                        }
+
+                    }
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+//                        start=new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
+                            destination = new LatLng(marker.getPosition().latitude,marker.getPosition().longitude);
+//                        findRoutes(lastLocation,destination);
+                            Intent intent = new Intent(getContext(), Merchant.class);
+
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("idMerchant" , Integer.parseInt(marker.getSnippet()));
+
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                            return false;
+                        }
+                    });
+                    RecyclerViewRecommendedAdapter recyclerViewRecommendedAdapter = new RecyclerViewRecommendedAdapter(mContext, mList,categoryId);
+                    Log.d("testAdapter", "Context Home " + mList.get(1).getId());
+
+
+//                ListenerFilterRecommended listenerFilterRecommended = new ListenerFilterRecommended() {
+//                    @Override
+//                    public void onCategoryIdChanged(String categoryId) {
+//                        recyclerViewRecommendedAdapter.getFilter(categoryId);
+//                    }
+//                };
+                    recyclerViewRecommendedAdapterFix = recyclerViewRecommendedAdapter;
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    recyclerView.setAdapter(recyclerViewRecommendedAdapterFix);
+                    progressBar.setVisibility(View.GONE);
+                    Log.d(TAG, "responses :" + mList.size());
+
+
+                }
+
+                @Override
+                public void onFailure(Call<MerchantIndex> call, Throwable t) {
+                    progressBar.setVisibility(View.VISIBLE);
+
+                    String Message = t.getMessage();
+                    Log.d(TAG + "f", Message);
+//                mList.add(new Recommended("Grand Hotel Swiss Berlin", "Jalan farming, No 11,Kec.Seminyek", "1"));
+//                Toast.makeText(SignInActivity.this,"Sorry Try Again" + emailtype + "/ " + "pass " + Message,Toast.LENGTH_LONG ).show();
+////                Log.d("response", t.getStackTrace().toString());
+                    if (t instanceof SocketTimeoutException) {
+                        Toast.makeText(getActivity(), "Connection time out  " + Message, Toast.LENGTH_LONG).show();
+                    } else if (t instanceof IOException) {
+                        Toast.makeText(getActivity(), "Time Out  " + Message, Toast.LENGTH_LONG).show();
+                    } else {
+                        //Call was cancelled by user
+                        if (call.isCanceled()) {
+                            System.out.println("Call was cancelled forcefully");
+                        } else {
+                            //Generic error handling
+                            System.out.println("Network Error :: " + t.getLocalizedMessage());
+                        }
+                    }
+                }
+            });
+        }
 
     }
     public void callApi() {
+        mMarker = new ArrayList<Marker>();
         Call<MerchantIndex> call = Api.getClient().recomendedplace("Bearer " + token);
         call.enqueue(new Callback<MerchantIndex>() {
             @Override
@@ -403,7 +611,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         return false;
                     }
                 });
-                RecyclerViewRecommendedAdapter recyclerViewRecommendedAdapter = new RecyclerViewRecommendedAdapter(getContext(), mList);
+                RecyclerViewRecommendedAdapter recyclerViewRecommendedAdapter = new RecyclerViewRecommendedAdapter(getContext(), mList,5);
                 Log.d("testAdapter", "Context Home " + mList.get(1).getId());
 
 
@@ -448,6 +656,80 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         });
 
         isReady = true;
+    }
+
+    public void callApiFilteredByCity(int city, final Context mContext) {
+        if(city != 3){
+            Call<TourismIndex> call = Api.getClient().tourismIndexCity("Bearer " + token,city);
+            call.enqueue(new Callback<TourismIndex>() {
+                @Override
+                public void onResponse(Call<TourismIndex> call, Response<TourismIndex> response) {
+                    if(response.isSuccessful()){
+                        mListTourism = new ArrayList<>();
+                        mMarker = new ArrayList<Marker>();
+                        mMap.clear();
+                        tourism = new ArrayList<>();
+
+                        List<TourismIndexGet> tourisms = response.body().getData();
+                        for(TourismIndexGet tourism : tourisms){
+                            LatLng position = new LatLng(tourism.getLatitude(), tourism.getLongitude());
+
+                            mListTourism.add(new TourismIndexGet(tourism.getId(),
+                                    tourism.getCity_id(),
+                                    tourism.getGallery_id(),
+                                    tourism.getName(),
+                                    tourism.getDescription(),
+                                    tourism.getPhoto(),
+                                    tourism.getAddress(),
+                                    tourism.getLatitude(),
+                                    tourism.getLongitude(),
+                                    tourism.getCreated_at(),
+                                    tourism.getUpdated_at()));
+                            Marker marker = mMap.addMarker(new MarkerOptions()
+                                    .position(position).title(tourism.getName())
+                                    .snippet(String.valueOf(tourism.getId()))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.tourism_fix))
+                                    .title(tourism.getName()));
+                            mMarker.add(marker);
+                        }
+                        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                            @Override
+                            public boolean onMarkerClick(Marker marker) {
+//                        start=new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
+                                destination = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+//                        findRoutes(lastLocation,destination);
+
+
+//                                Toast.makeText(getContext(), "Is not Implemented yet", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(mContext, GalleryActivity.class);
+
+                                Bundle bundle = new Bundle();
+                                bundle.putInt("idTourism", Integer.parseInt(marker.getSnippet()));
+
+                                intent.putExtras(bundle);
+                                mContext.startActivity(intent);
+                                return false;
+                            }
+                        });
+                        TourismAdapter tourismAdapter = new TourismAdapter(mContext, mListTourism);
+//                Log.d("testAdapter", "Context Home " + mList.get(1).getId());
+
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        recyclerView.setAdapter(tourismAdapter);
+                        progressBar.setVisibility(View.GONE);
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<TourismIndex> call, Throwable t) {
+
+                }
+            });
+        }
+       else{
+           callApi();
+        }
     }
 
 //    private void display(String responses) throws JSONException{

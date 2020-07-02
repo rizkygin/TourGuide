@@ -10,7 +10,7 @@ import com.example.tourguide.MapsActivity;
 import com.example.tourguide.R;
 
 public class SplashScreen extends AppCompatActivity {
-    private static int SPLASH_TIME = 1000; //This is 1 seconds
+    private static int SPLASH_TIME = 3000; //This is 1 seconds
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

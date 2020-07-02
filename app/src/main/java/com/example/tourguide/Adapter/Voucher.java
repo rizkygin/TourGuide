@@ -2,6 +2,8 @@ package com.example.tourguide.Adapter;
 
 import android.accessibilityservice.GestureDescription;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Voucher {
     private int id;
     private int item_id;
@@ -9,6 +11,9 @@ public class Voucher {
     private String description;
     private String category;
     private String start_time;
+    @SerializedName("point")
+    private int point;
+    private int merchant_id;
     private String end_time;
     private String nameStore;
     private Integer nominal;
@@ -17,12 +22,28 @@ public class Voucher {
     public Voucher() {
     }
 
-    public Voucher(String description, int value, Boolean status,String end_time) {
+    public Voucher(String description, int value, Boolean status,String end_time,int point,int id,int merchant_id) {
         this.description = description;
         this.value = value;
         this.status = status;
         this.end_time = end_time;
+        this.point = point;
+        this.id = id;
+        this.merchant_id = merchant_id;
     }
+
+    public int getMerchant_id() {
+        return merchant_id;
+    }
+
+    public int getPoint() {
+        return point;
+    }
+
+    public void setPoint(int point) {
+        this.point = point;
+    }
+
 
     public String getNameStore() {
         return nameStore;
@@ -45,7 +66,7 @@ public class Voucher {
     }
 
     public void setStatus(Boolean status) {
-        status = status;
+        this.status = status;
     }
 
 

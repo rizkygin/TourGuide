@@ -10,7 +10,6 @@ public class Api {
     public static Retrofit retrofit = null;
     public static UserClient getClient() {
 
-        // change your base URL
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    style="@style/Widget.MaterialComponents.CardView"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/mtrl_card_spacing"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="@dimen/mtrl_card_spacing">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="157dp">
+
+                <TextView
+                    android:id="@+id/nameStore"
+                    android:layout_width="205dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="21dp"
+                    android:layout_marginLeft="21dp"
+                    android:text="Hotel Ciputra"
+                    android:textStyle="bold" />
+
+
+                <androidx.cardview.widget.CardView
+                    android:gravity="center"
+                    app:cardCornerRadius="5dp"
+                    android:layout_alignTop="@+id/nameStore"
+                    android:id="@+id/image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginRight="21dp"
+                    android:layout_alignParentRight="true"
+                    android:text="20%"
+                    android:textColor="#05B39D"
+                    android:textSize="35dp"
+                    android:textStyle="bold">
+                    <ImageView
+                        android:src="@drawable/claim"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"/>
+                    <ImageView
+                        android:id="@+id/photoImageReward"
+                        android:layout_width="match_parent"
+                        android:scaleType="centerCrop"
+                        android:layout_height="match_parent"/>
+                </androidx.cardview.widget.CardView>
+
+                <ImageView
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@id/image"
+                    android:layout_alignLeft="@id/nameStore"
+                    android:id="@+id/dash"
+                    android:layout_marginTop="102dp"
+                    android:background="@drawable/dash"
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"/>
+                <TextView
+                    android:id="@+id/descriptionList"
+                    android:textSize="10dp"
+                    android:layout_width="230dp"
+                    android:layout_height="30dp"
+                    android:layout_below="@id/nameStore"
+                    android:layout_alignLeft="@id/nameStore"
+                    android:text="2020-06-14 12:35:48"
+                    android:textColor="@android:color/darker_gray" />
+                <TextView
+                    android:id="@+id/points"
+                    android:layout_below="@id/descriptionList"
+                    android:text="70"
+                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
+                    android:textColor="#05B29D"
+                    android:layout_alignLeft="@id/nameStore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_below="@id/descriptionList"
+                    android:layout_toRightOf="@id/points"
+                    android:text=" Point"
+                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/darker_gray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <Button
+                    android:id="@+id/btnGetVoucher"
+                    android:layout_width="77dp"
+                    android:background="@drawable/voucher_bg"
+                    android:textAllCaps="false"
+                    android:layout_height="31dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_alignLeft="@id/nameStore"
+                    android:layout_alignParentBottom="true"
+                    android:text="Redeem"
+                    android:textColor="#05B29D" />
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </RelativeLayout>
+
+
+
+
+
+</LinearLayout>

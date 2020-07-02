@@ -11,9 +11,12 @@ import com.example.tourguide.model.PromoSelf;
 import com.example.tourguide.service.Api;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -32,29 +35,32 @@ public class RedeemActivity extends AppCompatActivity {
     List<Voucher> mList;
     List<Voucher> vouchers = new ArrayList<>();
     RecyclerView recyclerView;
+    Button back;
+
+    @Override
+    public void onBackPressed() {
+        //nothing
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_redeem);
 
 
+        back = findViewById(R.id.backButton);
 
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(RedeemActivity.this,LandingMainActivity.class));
+            }
+        });
         points = findViewById(R.id.hisPoint);
-        recyclerView = findViewById(R.id.RecycleListVoucher);
+        recyclerView = findViewById(R.id.RecycleList);
 
 
         mList= new ArrayList<>();
-//        mList.add(new Voucher("Auto Leader",15000,true));
-//        mList.add(new Voucher("Rumah Makan Kita",35000,true));
-//        mList.add(new Voucher("Warung Santai ",23000,true));
-//        mList.add(new Voucher("Pak Tarno",25000,true));
-//        mList.add(new Voucher("Swadihap",15000,true));
-//        mList.add(new Voucher("Auto Leader 2",10000,true));
-//        mList.add(new Voucher("Bantal Ban ",15000,true));
-//        mList.add(new Voucher("Tidur Nyenyak Hotel",15000,true));
-//        mList.add(new Voucher("Best Cover Hotel",15000,true));
-//        mList.add(new Voucher("Safety Hotel",25000,true));
-//        mList.add(new Voucher("Kikuk",35000,true));
 
 
         SharedPreferences preferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
@@ -83,8 +89,10 @@ public class RedeemActivity extends AppCompatActivity {
                 if(response.isSuccessful()){
                     vouchers = response.body().getData();
                     for(Voucher voucher : vouchers){
-                        mList.add(new Voucher(voucher.getDescription(),voucher.getValue(),true,voucher.getEnd_time()));
-                        Log.d(TAG, "onResponse: " + " " + voucher.getValue());
+                        Log.d(TAG, "onResponse: "+ voucher.getId());
+                        Log.d(TAG, "onResponse: "+ voucher.getPoint());
+                        mList.add(new Voucher(voucher.getDescription(),voucher.getValue(),true,voucher.getEnd_time(),voucher.getPoint(),voucher.getId(),voucher.getMerchant_id()));
+//                        Log.d(TAG, "onResponse: " + " " + voucher.getValue());
                     }
                     recyclerView.setHasFixedSize(true);
                     RecyclerViewVoucherAdapter recyclerViewVoucherAdapter = new RecyclerViewVoucherAdapter(RedeemActivity.this,mList);

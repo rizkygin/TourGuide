@@ -1,173 +1,256 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".Activity.Merchant">
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/titleConstraint"
-        android:layout_width="match_parent"
-        android:layout_height="69dp"
-        android:background="#F0F7F8"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/nameMerchant"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:gravity="center"
-            android:text="Bali Ndeso Kampung Flory"
-            android:textSize="20dp"
-            android:textStyle="bold|italic"
-            app:layout_constraintBottom_toBottomOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/detailConstraint"
         android:layout_width="match_parent"
-        android:layout_height="320dp"
-        app:layout_constraintTop_toBottomOf="@id/titleConstraint">
-
-
-        <ImageView
-            android:scaleType="centerCrop"
-            android:id="@+id/imMerchant"
-            android:layout_width="match_parent"
-            android:layout_height="175dp"
-            android:cropToPadding="true"
-            android:src="@drawable/custom_button_choose_image"
-            app:layout_constraintTop_toTopOf="parent" />
-
+        android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:id="@+id/labelRelative"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="80dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imMerchant">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:layout_alignParentLeft="true"
-                android:gravity="start"
-                android:textStyle="bold"
-                android:id="@+id/labelClose"
-                android:text="Opening Hours"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:textStyle="bold"
-                android:layout_below="@id/labelAddress"
-                android:id="@+id/labelDesc"
-                android:text="Description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:paddingLeft="10dp"
-                android:layout_alignLeft="@id/tvOpenAtRelative"
-                android:layout_below="@id/labelAddress"
-                android:layout_toRightOf="@id/labelDesc"
-                android:id="@+id/tvDescRelative"
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Description" />
+                android:layout_below="@id/titleConstraint"
+                android:layout_alignParentBottom="true">
 
-            <TextView
-                android:layout_toRightOf="@id/tvOpenAtRelative"
-                android:id="@+id/tvClosedRelative"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Closed" />
-            <TextView
-                android:id="@+id/tvOpenAtRelative"
-                android:paddingLeft="10dp"
-                android:layout_toRightOf="@id/labelClose"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Open At" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/detailConstraint"
+                        android:layout_width="match_parent"
+                        android:layout_height="320dp">
+
+                        <TextView
+                            android:id="@+id/iWantSeeMyTutorial"
+                            android:textStyle="italic"
+                            android:visibility="gone"
+                            android:textColor="@android:color/holo_blue_dark"
+                            android:layout_marginRight="5dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            android:layout_width="wrap_content"
+                            android:text="@string/tutorial"
+                            android:textAllCaps="false"
+                            android:layout_height="wrap_content"/>
+                        <ImageView
+                            android:id="@+id/imMerchant"
+                            android:layout_width="match_parent"
+                            android:layout_height="175dp"
+                            android:cropToPadding="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/custom_button_choose_image"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <RelativeLayout
+                            android:id="@+id/labelRelative"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginRight="5dp"
+                            android:minHeight="80dp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/imMerchant">
+
+                            <TextView
+                                android:id="@+id/labelClose"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:gravity="start"
+                                android:text="Opening Hours"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/labelDesc"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/labelAddress"
+                                android:text="Description"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvDescRelative"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/labelAddress"
+                                android:layout_alignLeft="@id/tvOpenAtRelative"
+                                android:layout_toRightOf="@id/labelDesc"
+                                android:paddingLeft="10dp"
+                                android:text="Description" />
+
+                            <TextView
+                                android:id="@+id/tvClosedRelative"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/tvOpenAtRelative"
+                                android:text="Closed" />
+
+                            <TextView
+                                android:id="@+id/tvOpenAtRelative"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/labelClose"
+                                android:paddingLeft="10dp"
+                                android:text="Open At" />
 
 
-            <TextView
-                android:textStyle="bold"
-                android:gravity="top|start"
-                android:layout_below="@id/labelClose"
-                android:id="@+id/labelAddress"
-                android:text="Location"
-                android:layout_alignBottom="@id/tvAddressRelative"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:layout_toRightOf="@id/labelAddress"
-                android:paddingLeft="10dp"
-                android:layout_alignLeft="@id/tvOpenAtRelative"
-                android:id="@+id/tvAddressRelative"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvOpenAtRelative"
-                android:text="Address" />
+                            <TextView
+                                android:id="@+id/labelAddress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/labelClose"
+                                android:layout_alignBottom="@id/tvAddressRelative"
+                                android:gravity="top|start"
+                                android:text="Location"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvAddressRelative"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/tvOpenAtRelative"
+                                android:layout_alignLeft="@id/tvOpenAtRelative"
+                                android:layout_toRightOf="@id/labelAddress"
+                                android:paddingLeft="10dp"
+                                android:text="Address" />
+
+                        </RelativeLayout>
+
+                        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/fabMerchant"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="140dp"
+                            android:layout_marginRight="20dp"
+                            android:src="@drawable/plus_foreground"
+                            app:backgroundTint="#8BC34A"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/detailConstraint">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/tvLabel">
+
+                                <ImageView
+                                    android:id="@+id/noDiscountImg"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="200dp"
+                                    android:src="@drawable/no_discount" />
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/merchantItems"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
+                            </RelativeLayout>
+
+                            <TextView
+                                android:id="@+id/tvLabel"
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:background="@drawable/no_discount_label"
+                                android:paddingLeft="10dp"
+                                android:text="Merchant's item"
+                                android:textColor="@android:color/white"
+                                android:textSize="18dp"
+                                android:textStyle="bold" />
+
+                        </RelativeLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </RelativeLayout>
+            </ScrollView>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/titleConstraint"
+                android:layout_width="match_parent"
+                android:layout_height="69dp"
+                android:background="@drawable/shadow"
+                android:padding="17dp"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <Button
+                    android:id="@+id/mBackButton"
+                    android:translationZ="1dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/arrow_black"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/openMerchantEdit"
+                    android:translationZ="1dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/edit"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    app:layout_constraintLeft_toRightOf="@id/mBackButton"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:id="@+id/nameMerchant"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Tour Guide Merchant"
+                    android:textColor="@android:color/black"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </RelativeLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabMerchant"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="140dp"
-            android:layout_marginRight="20dp"
-            android:src="@drawable/plus_foreground"
-            app:backgroundTint="#8BC34A"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ImageView
+        android:id="@+id/tutorial"
+        android:translationZ="1dp"
+        android:visibility="gone"
+        android:background="@drawable/tutorial_swipe"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/detailConstraint">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/tvLabel"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/no_discount_label"
-                android:paddingLeft="10dp"
-                android:text="Discount Today"
-                android:textColor="@android:color/white"
-                android:textSize="18dp"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/noDiscountImg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/no_discount" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/merchantItems"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tvLabel"
-                android:minHeight="100dp" />
-        </RelativeLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>
+        android:layout_height="match_parent"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/tutorButton"
+        android:layout_alignParentRight="true"
+        android:layout_width="100dp"
+        android:visibility="gone"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:translationZ="2dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:backgroundTint="#FFCA05"
+        android:layout_height="50dp"
+        android:text="OK"/>
+</RelativeLayout>

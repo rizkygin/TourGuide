@@ -7,6 +7,7 @@ import com.example.tourguide.R;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -30,7 +31,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 import android.util.Size;
+import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -38,6 +41,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.example.tourguide.model.ScanResponses;
 import com.example.tourguide.service.Api;
 import com.example.tourguide.service.JsonResponse;
 import com.google.zxing.BarcodeFormat;
@@ -55,6 +59,8 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -63,6 +69,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ScanActivity extends AppCompatActivity{
+
+    private static final String TAG = "ScanActivity";
+
     private Size imageDimension;
     private CameraDevice cameraDevice;
     private CameraCaptureSession cameraCaptureSessions;
@@ -85,6 +94,12 @@ public class ScanActivity extends AppCompatActivity{
     private String cameraId;
     private Camera mCamera;
     private TextureView mTextureView;
+
+    @Override
+    public void onBackPressed() {
+        //nothing
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +119,7 @@ public class ScanActivity extends AppCompatActivity{
                     public void run() {
 //                        mresultOfQR.setText(result.getText());
                         //CallAPI
-                        callApi();
+                        callApi(result.getText());
                     }
                 });
             }
@@ -126,20 +141,55 @@ public class ScanActivity extends AppCompatActivity{
 
     }
 
-    private void callApi() {
+    private void callApi(String results) {
         SharedPreferences preferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         token = preferences.getString("token", "");
-        Call<JsonResponse> call = Api.getClient().scanQrCode("Bearer "+ token,token);
-        call.enqueue(new Callback<JsonResponse>() {
+        Call<ScanResponses> call = Api.getClient().scanQrCode("Bearer "+ token,results);
+        call.enqueue(new Callback<ScanResponses>() {
             @Override
-            public void onResponse(Call<JsonResponse> call, Response<JsonResponse> response) {
-                Toast.makeText(ScanActivity.this, "Scan QR Code Success", Toast.LENGTH_LONG).show();
-//                Intent intent = new Intent(ScanActivity.this,RedeemActivity.class);
-//                startActivity(intent);
+            public void onResponse(Call<ScanResponses> call, Response<ScanResponses> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(ScanActivity.this, "Scan QR Code Success", Toast.LENGTH_LONG).show();
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ScanActivity.this);
+                    View dialog = LayoutInflater.from(ScanActivity.this).inflate(R.layout.custom_dialog_redeem,null,false);
+                    TextView email = dialog.findViewById(R.id.mName);
+                    TextView name = dialog.findViewById(R.id.judul);
+                    TextView description = dialog.findViewById(R.id.info);
+                    Button mOk = dialog.findViewById(R.id.buttonOk);
+
+                    if(response.body().getUser()!= null){
+                        email.setText(response.body().getUser().getEmail());
+                        if (response.body().getUser().getName()!=null){
+
+                            name.setText("Congratulation! " + response.body().getUser().getName());
+                        }
+                    }
+
+                    description.setText(" User Guide will claim " + response.body().getPromo().getDescription() + " Valid untiil "+ response.body().getPromo().getEnd_time());
+                    if(response.body().getPromo().getEnd_time() == null){
+                        description.setText(" User Guide will claim " + response.body().getPromo().getDescription() + " Valid untiil forever!" );
+                    }
+                    builder.setView(dialog);
+
+                    AlertDialog alertDialog = builder.create();
+                    mOk.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Toast.makeText(ScanActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+                            alertDialog.cancel();
+                        }
+                    });
+                    alertDialog.show();
+                }
+                Toast.makeText(ScanActivity.this, "Failed to scan QR code", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onResponse: " +  results);
+
             }
 
             @Override
-            public void onFailure(Call<JsonResponse> call, Throwable t) {
+            public void onFailure(Call<ScanResponses> call, Throwable t) {
 
             }
         });

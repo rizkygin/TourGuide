@@ -7,6 +7,7 @@ import com.example.tourguide.R;
 import com.example.tourguide.model.RegisterdUser;
 import com.example.tourguide.model.User;
 import com.example.tourguide.service.Api;
+import com.example.tourguide.service.GMailSender;
 import com.example.tourguide.service.UserClient;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
@@ -16,16 +17,23 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ProgressBar;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,13 +47,20 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputLayout email,fullname,address,handphone,password;
     private String nametype,emailtype,passwordtype,handphonetype,addresstype;
     private String selectedOccupation;
-    private MaterialButton signUp;
+    private MaterialButton signUp,openEmailButton;
+
+    private ImageView mOpenEmailBG;
 
     private ProgressBar progressbar;
-
+    OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .build();
     Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("https://tourgr.id/api/")
             .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
             .build();
 
     UserClient userClient = retrofit.create(UserClient.class);
@@ -59,20 +74,41 @@ public class RegisterActivity extends AppCompatActivity {
 
         email = findViewById(R.id.email);
         fullname = findViewById(R.id.fullname);
-        address = findViewById(R.id.address);
         handphone = findViewById(R.id.handphone);
         password = findViewById(R.id.password);
 
         signUp = findViewById(R.id.btnSignUp);
+        mOpenEmailBG = findViewById(R.id.openEmailBG);
+        openEmailButton = findViewById(R.id.openEmailButton);
+
+        openEmailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(RegisterActivity.this,SignInActivity.class);
+                startActivity(i);
+            }
+        });
 
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 progressbar.setVisibility(View.VISIBLE);
+//                //TODO Checking the email sender by Gmail
+//                try {
+//                    GMailSender sender = new GMailSender("riwayathiduporang@gmail.com", "TRI16@ISec");
+//                    sender.sendMail("Test Api App",
+//                            "This is Testing",
+//                            "riwayathiduporang@gmail.com",
+//                            "riwayathiduporang@gmail.com");
+//                    progressbar.setVisibility(View.GONE);
+//                    Log.d("SendMail", "onClick: What");
+//
+//                } catch (Exception e) {
+//                    Log.e("SendMail", e.getMessage(), e);
+//                }
                 if(validate()){
                     register();
                 }else{
-
                     Toast.makeText(RegisterActivity.this,"Upps Double Check the Form Registration",Toast.LENGTH_LONG).show();
                     progressbar.setVisibility(View.GONE);
                 }
@@ -90,27 +126,26 @@ public class RegisterActivity extends AppCompatActivity {
         this.emailtype = email.getEditText().getText().toString();
         this.passwordtype = password.getEditText().getText().toString();
         this.nametype = fullname.getEditText().getText().toString();
-        this.addresstype = address.getEditText().getText().toString();
         this.handphonetype = handphone.getEditText().getText().toString();
 
         if(emailtype.isEmpty()){
-            email.setError("Is Not Valid Email");
+            email.setError("Is Not Valid Email!");
             return false;
         }
         if(passwordtype.isEmpty()){
-            password.setError("Please Fill The Field");
+            password.setError("Please Fill The Field!");
             return false;
         }
-        if(addresstype.isEmpty()){
-            address.setError("Please Fill The Field");
+        if(passwordtype.length() < 6){
+            password.setError("At least 6 character for make password!");
             return false;
         }
         if(handphonetype.isEmpty()){
-            handphone.setError("Please Fill The Field");
+            handphone.setError("Please Fill The Field!");
             return false;
         }
         if(nametype.isEmpty()){
-            fullname.setError("Please Fill The Field");
+            fullname.setError("Please Fill The Field!");
             return false;
         }
         return true;
@@ -121,38 +156,44 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void register() {
-        Call<RegisterdUser> call =  userClient.registration(nametype,emailtype,passwordtype,passwordtype);
+        Call<RegisterdUser> call =  userClient.registration(nametype,emailtype,passwordtype,handphonetype,passwordtype);
         call.enqueue(new Callback<RegisterdUser>() {
             @Override
             public void onResponse(Call<RegisterdUser> call, Response<RegisterdUser> response) {
                 if(response.isSuccessful()){
-                    SharedPreferences sharedPreferences = getSharedPreferences("UserData",MODE_PRIVATE);
+//                    SharedPreferences sharedPreferences = getSharedPreferences("UserData",MODE_PRIVATE);
                     Toast.makeText(RegisterActivity.this,"Registered Complete",Toast.LENGTH_LONG);
                     //Clear all UserData Shared Preferences
-                    if(sharedPreferences.getString("email",null) != null){
-                        sharedPreferences.edit()
-                                .clear()
-                                .commit();
-                        SharedPreferences.Editor editor= sharedPreferences.edit();
-                        editor.putString("email",emailtype);
-                        editor.putString("name",nametype);
-                        editor.putString("occupation",selectedOccupation);
-                        editor.putString("address",addresstype);
-
-                        editor.commit();
-                    }else{
-                        SharedPreferences.Editor editor= sharedPreferences.edit();
-                        editor.putString("email",emailtype);
-                        editor.putString("name",nametype);
-                        editor.putString("occupation",selectedOccupation);
-                        editor.putString("address",addresstype);
-
-                        editor.commit();
+//                    if(sharedPreferences.getString("email",null) != null){
+//                        sharedPreferences.edit()
+//                                .clear()
+//                                .commit();
+//                        SharedPreferences.Editor editor= sharedPreferences.edit();
+//                        editor.putString("email",emailtype);
+//                        editor.putString("name",nametype);
+//                        editor.putString("phone",handphonetype);
+//
+//                        editor.commit();
+//                    }else{
+//                        SharedPreferences.Editor editor= sharedPreferences.edit();
+//                        editor.putString("email",emailtype);
+//                        editor.putString("name",nametype);
+//                        editor.putString("phone",handphonetype);
+//
+//                        editor.commit();
+//                    }
+                    //close the keyboard
+                    View view = RegisterActivity.this.getCurrentFocus();
+                    if (view != null) {
+                        InputMethodManager imm = (InputMethodManager)getSystemService(RegisterActivity.this.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     }
-                    Intent i = new Intent(RegisterActivity.this,SignInActivity.class);
-                    startActivity(i);
+                    openEmailButton.setVisibility(View.VISIBLE);
+                    mOpenEmailBG.setVisibility(View.VISIBLE);
                 }else{
-                    Toast.makeText(RegisterActivity.this,"Upps Something Wrong",Toast.LENGTH_LONG);
+                    email.setError("This email has already been taken");
+                    progressbar.setVisibility(View.GONE);
+                    Toast.makeText(RegisterActivity.this,"Something Wrong",Toast.LENGTH_LONG);
                 }
 
             }

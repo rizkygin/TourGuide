@@ -52,7 +52,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
             mAdapter.deleteItem(viewHolder.getAdapterPosition() );
         }
         if(direction == ItemTouchHelper.RIGHT){//right Swiped
-            mAdapter.updateActivity(viewHolder.getAdapterPosition());
+            mAdapter.addPromo(viewHolder.getAdapterPosition());
             Log.d(TAG, "onSwiped: Right ?");
         }
     }

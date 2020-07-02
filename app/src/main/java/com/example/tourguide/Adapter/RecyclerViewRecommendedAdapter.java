@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.LinearLayout;
@@ -36,6 +37,7 @@ public class RecyclerViewRecommendedAdapter extends RecyclerView.Adapter<Recycle
     List<Recommended> mData;
     List<Recommended> mDataAll;
     List<Recommended> mDataFilter = new ArrayList<>();
+    int categoryId;
 
     int category;
 
@@ -43,10 +45,11 @@ public class RecyclerViewRecommendedAdapter extends RecyclerView.Adapter<Recycle
         this.mContext = mContext;
     }
 
-    public RecyclerViewRecommendedAdapter(Context mContext, List<Recommended> mData) {
+    public RecyclerViewRecommendedAdapter(Context mContext, List<Recommended> mData,int categoryId) {
         this.mContext = mContext;
         this.mData = mData;
         this.mDataAll = new ArrayList<>(mData);
+        this.categoryId = categoryId;
     }
 
     @NonNull
@@ -80,6 +83,34 @@ public class RecyclerViewRecommendedAdapter extends RecyclerView.Adapter<Recycle
         holder.mName.setText(mData.get(position).getName());
         holder.mAddress.setText(mData.get(position).getAddress());
 
+        switch (categoryId){
+            case 1:
+                holder.category.setText("Souvenir");
+                holder.category.setTextColor(mContext.getResources().getColor(R.color.bg_souvenir));
+                holder.category.setBackground(mContext.getResources().getDrawable(R.drawable.bg_souvenir));
+
+                break;
+            case 2:
+                holder.category.setText("Hotel");
+                holder.category.setTextColor(mContext.getResources().getColor(R.color.bg_hotel));
+                holder.category.setBackground(mContext.getResources().getDrawable(R.drawable.bg_hotel));
+
+
+                break;
+            case 3:
+                holder.category.setText("Food");
+                holder.category.setTextColor(mContext.getResources().getColor(R.color.bg_food));
+                holder.category.setBackground(mContext.getResources().getDrawable(R.drawable.bg_food));
+
+
+                break;
+            case 5:
+                holder.category.setText("Recommended");
+                holder.category.setTextColor(mContext.getResources().getColor(R.color.bg_recommended));
+                holder.category.setBackground(mContext.getResources().getDrawable(R.drawable.bg_recommended));
+
+                break;
+        }
     }
 
     @Override
@@ -87,26 +118,6 @@ public class RecyclerViewRecommendedAdapter extends RecyclerView.Adapter<Recycle
         return mData.size();
     }
 
-    public void getFilter(String categoryId){
-
-        if(!mData.isEmpty()){
-            if(mData.size() != mDataAll.size()){
-                mData = mDataAll;
-            }
-            mDataFilter = new ArrayList<Recommended>();
-
-            for (int i = 0; i< mData.size();i++){
-                if(mData.get(i).getCategory_id() == Integer.parseInt(categoryId)){
-                        mDataFilter.add(mData.get(i));
-                    Log.d(TAG, "getFilter: "+ mData.size());
-                }
-            }
-            if (mDataFilter.size() != 0){
-                mData = mDataFilter;
-                notifyDataSetChanged();
-            }
-        }
-    }
 
     public void getResults(ArrayList<Recommended> filter) {
         mData = filter;
@@ -120,6 +131,7 @@ public class RecyclerViewRecommendedAdapter extends RecyclerView.Adapter<Recycle
         private CardView recommended;
         private TextView mName;
         private TextView mAddress;
+        Button category;
         private boolean mImage;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -127,6 +139,7 @@ public class RecyclerViewRecommendedAdapter extends RecyclerView.Adapter<Recycle
             recommended = itemView.findViewById(R.id.recommended);
             mName = itemView.findViewById(R.id.recomended_name);
             mAddress = itemView.findViewById(R.id.recomended_addresss);
+            category = itemView.findViewById(R.id.tourism_image);
 
         }
 

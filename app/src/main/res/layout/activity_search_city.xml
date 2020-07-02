@@ -31,7 +31,7 @@
     <ScrollView
         android:id="@+id/rvMIDSC"
         android:layout_below="@id/rvTOPSC"
-        android:layout_above="@+id/btncurrent"
+        android:layout_above="@+id/btnCurrent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -50,7 +50,7 @@
 
     <com.google.android.material.button.MaterialButton
 
-        android:id="@+id/btncurrent"
+        android:id="@+id/btnCurrent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"

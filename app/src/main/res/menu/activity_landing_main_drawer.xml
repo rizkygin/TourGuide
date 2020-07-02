@@ -3,20 +3,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/redeem"
-            android:icon="@drawable/ic_monetization_on_black_24dp"
-            android:title="Redeem Point" />
-    </group>
-
-    <item android:title="Action">
+    <item android:title="Guide">
         <menu>
             <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/collect"
+                    android:icon="@drawable/collect"
+                    android:title="Collect Points" />
+                <item
+                    android:id="@+id/redeem"
+                    android:icon="@drawable/ic_monetization_on_black_24dp"
+                    android:title="Redeem Points" />
+            </group>
+        </menu>
+
+    </item>
+
+    <item android:title="Merchant">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/promoSelf"
+                    android:icon="@drawable/claim"
+                    android:title="Check Promo"/>
                 <item
                     android:id="@+id/scan"
                     android:icon="@drawable/ic_scan"
                     android:title="Scan" />
+            </group>
+        </menu>
+    </item>
+    <item android:title="Action">
+        <menu>
+            <group android:checkableBehavior="single">
+
                 <item
                     android:id="@+id/logout_action"
                     android:icon="@drawable/logout"

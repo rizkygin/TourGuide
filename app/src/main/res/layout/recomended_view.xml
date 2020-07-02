@@ -29,13 +29,16 @@
                 android:text="Jalan farming, No 11,Kec.Seminyek"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-            <ImageView
-                android:paddingTop="4dp"
-                android:src="@drawable/recomended_image"
+            <Button
+                android:id="@+id/tourism_image"
+                android:textColor="#05B39D"
+                android:textSize="8dp"
+                android:textAllCaps="false"
+                android:text="Recommended"
+                android:background="@drawable/voucher_bg"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:id="@+id/recomended_image"
-                android:layout_width="50dp"
+                android:layout_width="80dp"
                 android:layout_height="20dp"/>
 
         </RelativeLayout>

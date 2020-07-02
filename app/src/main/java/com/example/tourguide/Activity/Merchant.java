@@ -14,6 +14,7 @@ import com.example.tourguide.model.MerchantShow;
 import com.example.tourguide.model.Promo;
 import com.example.tourguide.service.Api;
 import com.example.tourguide.service.SwipeToDeleteCallback;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import android.content.ClipData;
@@ -23,6 +24,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,13 +43,18 @@ public class Merchant extends AppCompatActivity {
     FloatingActionButton fab;
     RecyclerView recyclerView;
     int path;
-    TextView mNameStore,mDesc,mClose,mOpen,mAddress,mDiscountText;
-    ImageView mPic,mImgnoDiscount;
+    TextView mNameStore,mDesc,mClose,mOpen,mAddress,mDiscountText,iWantTutorial;
+    ImageView mPic,mImgnoDiscount,mTutorial;
     List<ItemOnMerchant> mList = new ArrayList<>();
     String urlPhoto;
     int userMerchantId;
     private String TAG  = "Merchant.Activity";
     private String token;
+    Button editMerchant;
+    Bundle bundle = new Bundle();
+    Button mLandingBack;
+    MaterialButton mTutorButton;
+    SharedPreferences sharedPreferencesTu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +62,7 @@ public class Merchant extends AppCompatActivity {
         setContentView(R.layout.activity_merchant);
 
         mNameStore = findViewById(R.id.nameMerchant);
+        mLandingBack = findViewById(R.id.mBackButton);
         mDesc = findViewById(R.id.tvDescRelative);
         mDiscountText = findViewById(R.id.tvLabel);
         mClose = findViewById(R.id.tvClosedRelative);
@@ -63,10 +71,42 @@ public class Merchant extends AppCompatActivity {
         mPic = findViewById(R.id.imMerchant);
         mImgnoDiscount = findViewById(R.id.noDiscountImg);
         fab = findViewById(R.id.fabMerchant);
+        editMerchant = findViewById(R.id.openMerchantEdit);
+        mTutorial = findViewById(R.id.tutorial);
+        mTutorButton = findViewById(R.id.tutorButton);
+        iWantTutorial = findViewById(R.id.iWantSeeMyTutorial);
+
+
+        sharedPreferencesTu = getSharedPreferences("Tutor",Context.MODE_PRIVATE);
+        mTutorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedPreferencesTu.edit();
+                editor.putBoolean("needTutor",false);
+                editor.commit();
+                mTutorButton.setVisibility(View.GONE);
+                mTutorial.setVisibility(View.GONE);
+            }
+        });
+        iWantTutorial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTutorial.setVisibility(View.VISIBLE);
+                mTutorButton.setVisibility(View.VISIBLE);
+            }
+        });
+        editMerchant.setVisibility(View.GONE);
 
         recyclerView = findViewById(R.id.merchantItems);
         Intent intent = getIntent();
-
+        mTutorial.setVisibility(View.GONE);
+        mTutorButton.setVisibility(View.GONE);
+        mLandingBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Merchant.this,LandingMainActivity.class));
+            }
+        });
         path = intent.getIntExtra("idMerchant",0);
         if(path == 0){
             Intent i  = new Intent(Merchant.this,LandingMainActivity.class);
@@ -80,6 +120,15 @@ public class Merchant extends AppCompatActivity {
         Log.d(TAG, "merchant_id: " + userMerchantId);
 
         if(userMerchantId == path){
+            editMerchant.setVisibility(View.VISIBLE);
+            iWantTutorial.setVisibility(View.VISIBLE);
+
+            if(sharedPreferencesTu.getBoolean("needTutor",true)){
+                mTutorial.setVisibility(View.VISIBLE);
+                mTutorButton.setVisibility(View.VISIBLE);
+
+            }
+
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -95,7 +144,6 @@ public class Merchant extends AppCompatActivity {
             fab.setVisibility(View.GONE);
         }
 
-
     }
 
     private void callAPI() {
@@ -107,10 +155,15 @@ public class Merchant extends AppCompatActivity {
                     Log.d(TAG, "Code :" + response.code());
                     return;
                 }
+                Log.d(TAG, "onResponse: in kenapa 0 terus ya" + response.body().getData().size());
                 mNameStore.setText(response.body().getData().get(0).getName());
-                Log.d(TAG, "onResponse: " +  response.body().getData().get(0).getName());
-                mDesc.setText("" + response.body().getData().get(0).getDescription());
-                mAddress.setText("" + response.body().getData().get(0).getAddress());
+                bundle.putString("name",response.body().getData().get(0).getName());
+                mDesc.setText(response.body().getData().get(0).getDescription());
+                bundle.putString("description",response.body().getData().get(0).getDescription());
+
+                mAddress.setText(response.body().getData().get(0).getAddress());
+                bundle.putString("address",response.body().getData().get(0).getAddress());
+
                 mClose.setText("- 22.00" );
                 mOpen.setText("10.00 " );
                 List<ItemOnMerchant> items = response.body().getData().get(0).getItem();
@@ -134,6 +187,15 @@ public class Merchant extends AppCompatActivity {
                     Log.d(TAG, "onResponse: userMerchant Path " + userMerchantId + " : path " + path);
                     ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
                     itemTouchHelper.attachToRecyclerView(recyclerView);
+
+                    editMerchant.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent edit = new Intent(Merchant.this,EditAccountActivity.class);
+                            edit.putExtras(bundle);
+                            startActivity(edit);
+                        }
+                    });
                 }
 
 
@@ -143,6 +205,7 @@ public class Merchant extends AppCompatActivity {
                 Glide.with(Merchant.this)
                         .load(urlPhoto)
                         .into(mPic);
+
 
             }
 

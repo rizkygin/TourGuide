@@ -1,71 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center"
     android:background="@drawable/custom_background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnWisata"
-        android:layout_alignParentStart="true"
-        app:cornerRadius="3dp"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:backgroundTint="@android:color/white"
-        android:text="Wisata"
-        android:textSize="8dp"
-        android:textColor="@android:color/darker_gray"
-        app:iconSize="15dp"
-        app:iconTint="#D2F38B"
-        app:icon="@drawable/ic_wisata"
-        app:iconGravity="start"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRecommend"
+            android:layout_alignParentStart="true"
+            app:cornerRadius="3dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:backgroundTint="@android:color/white"
+            android:text="Recommend"
+            android:textSize="7dp"
+            android:textColor="@android:color/darker_gray"
+            app:iconSize="15dp"
+            app:iconTint="@color/bg_recommended"
+            app:icon="@drawable/ic_recommend"
+            app:iconGravity="start"
+            android:layout_width="100dp"
+            android:layout_height="30dp"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnWisata"
+            android:layout_toRightOf="@id/btnRecommend"
+            app:cornerRadius="3dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:backgroundTint="@android:color/white"
+            android:text="Tourism"
+            android:textSize="7dp"
+            android:textColor="@android:color/darker_gray"
+            app:iconSize="15dp"
+            app:iconTint="#D2F38B"
+            app:icon="@drawable/ic_wisata"
+            app:iconGravity="start"
+            android:layout_width="100dp"
+            android:layout_height="30dp"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnHotel"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_toRightOf="@+id/btnWisata"
-        android:backgroundTint="@android:color/white"
-        android:text="Hotel"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="8dp"
-        app:cornerRadius="3dp"
-        app:icon="@drawable/ic_wisata"
-        app:iconGravity="start"
-        app:iconSize="15dp"
-        app:iconTint="#F876B8" />
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnSouvernir"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_toRightOf="@id/btnHotel"
-        android:backgroundTint="@android:color/white"
-        android:text="Souvenir"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="8dp"
-        app:cornerRadius="3dp"
-        app:icon="@drawable/ic_wisata"
-        app:iconGravity="start"
-        app:iconSize="15dp"
-        app:iconTint="#00A99D" />
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnFood"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_toEndOf="@id/btnSouvernir"
-        android:backgroundTint="@android:color/white"
-        android:text="Food"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="8dp"
-        app:cornerRadius="3dp"
-        app:icon="@drawable/ic_wisata"
-        app:iconGravity="start"
-        app:iconSize="15dp"
-        app:iconTint="#FBAE17" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnHotel"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_toRightOf="@+id/btnWisata"
+            android:backgroundTint="@android:color/white"
+            android:text="Hotel"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="7dp"
+            app:cornerRadius="3dp"
+            app:icon="@drawable/ic_wisata"
+            app:iconGravity="start"
+            app:iconSize="15dp"
+            app:iconTint="@color/bg_hotel" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSouvernir"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_toRightOf="@id/btnHotel"
+            android:backgroundTint="@android:color/white"
+            android:text="Souvenir"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="7dp"
+            app:cornerRadius="3dp"
+            app:icon="@drawable/ic_wisata"
+            app:iconGravity="start"
+            app:iconSize="15dp"
+            app:iconTint="@color/bg_souvenir" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnFood"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_toRightOf="@id/btnSouvernir"
+            android:backgroundTint="@android:color/white"
+            android:text="Food"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="7dp"
+            app:cornerRadius="3dp"
+            app:icon="@drawable/ic_wisata"
+            app:iconGravity="start"
+            app:iconSize="15dp"
+            app:iconTint="@color/bg_food" />
+    </RelativeLayout>
 
-</RelativeLayout>
+
+
+</HorizontalScrollView>

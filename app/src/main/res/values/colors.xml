@@ -14,4 +14,9 @@
     <color name="my_app_color_on_error">#263F45</color>
     <color name="my_app_color_on_background">#263F45</color>
     <color name="my_app_color_on_surface">#263F45</color>
+    <color name="my_app_button_clicked">#263F45</color>
+    <color name="bg_food">#FBAE17</color>
+    <color name="bg_hotel">#F876B8</color>
+    <color name="bg_souvenir">#00A99D</color>
+    <color name="bg_recommended">#AF002A</color>
 </resources>
