@@ -222,11 +222,17 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
         double result;
         int resultss;
         result = value*originalPrice/100;
-        if(result <= max){
+        Log.d(TAG, "result: value " + value + " potongan " + result + " Max " + max);
+        if(max != 0){
+            if(result <= max){
+                resultss = (int) (originalPrice - result);
+            }else{
+                resultss = (originalPrice - max);
+            }
+        }else {
             resultss = (int) (originalPrice - result);
-        }else{
-            resultss = (originalPrice - max);
         }
+
         return String.valueOf(resultss);
     }
 

@@ -90,11 +90,7 @@ public class LandingMainActivity extends AppCompatActivity implements Navigation
     private int mInterval = 5000; // 5 seconds by default, can be changed later
     private Handler mHandler;
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        stopRepeatingTask();
-    }
+
 
     Runnable mStatusChecker = new Runnable() {
         @Override
@@ -338,6 +334,7 @@ public class LandingMainActivity extends AppCompatActivity implements Navigation
                         editor.putString("points",response.body().getUser().getPoints());
                         editor.commit();
                         Log.d(TAG, "onResponse: different point" );
+                        Toast.makeText(LandingMainActivity.this, "Your point now " + response.body().getUser().getPoints(), Toast.LENGTH_LONG).show();
                         android.app.AlertDialog.Builder builder;
                         builder = new android.app.AlertDialog.Builder(LandingMainActivity.this);
                         View dialog;
