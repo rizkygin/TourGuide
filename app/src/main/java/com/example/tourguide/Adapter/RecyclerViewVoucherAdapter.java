@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tourguide.Activity.Merchant;
 import com.example.tourguide.Activity.SpesificProduct;
 import com.example.tourguide.R;
+import com.example.tourguide.model.ItemsVoucher;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
@@ -24,7 +25,8 @@ import java.util.List;
 public class RecyclerViewVoucherAdapter extends RecyclerView.Adapter<RecyclerViewVoucherAdapter.VoucherHolder> {
     Context mContext;
     List<Voucher> mData;
-
+    private static final String TAG ="VoucherAdapter";
+    ItemsVoucher item;
     public RecyclerViewVoucherAdapter() {
     }
 
@@ -50,10 +52,20 @@ public class RecyclerViewVoucherAdapter extends RecyclerView.Adapter<RecyclerVie
         holder.eShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, Merchant.class);
+                Intent intent = new Intent(mContext, SpesificProduct.class);
 
+                item = mData.get(position).getItem();
                 Bundle bundle = new Bundle ();
-                bundle.putInt("idMerchant",mData.get(position).getMerchant_id());
+                bundle.putInt("merchantID",mData.get(position).getMerchant_id());
+                Log.d(TAG, "onClick: " + mData.get(position).getMerchant_id());
+                bundle.putString("MODE","fromVoucher");
+                bundle.putString("StringURLImage",item.getPhoto());
+                bundle.putString("StringDescription",item.getDescription());
+                bundle.putString("StringAddress",mData.get(position).getDescription());
+                bundle.putInt("Value",mData.get(position).getValue());
+                bundle.putInt("Max_cut",mData.get(position).getMax_cut());
+                bundle.putString("StringEndDate",mData.get(position).getEnd_time());
+                bundle.putInt("pathItem",mData.get(position).getId());
 
                 intent.putExtras(bundle);
                 mContext.startActivity(intent);

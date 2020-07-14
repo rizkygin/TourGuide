@@ -65,8 +65,8 @@ public class Merchant extends AppCompatActivity {
         mLandingBack = findViewById(R.id.mBackButton);
         mDesc = findViewById(R.id.tvDescRelative);
         mDiscountText = findViewById(R.id.tvLabel);
-        mClose = findViewById(R.id.tvClosedRelative);
-        mOpen = findViewById(R.id.tvOpenAtRelative);
+//        mClose = findViewById(R.id.tvClosedRelative);
+//        mOpen = findViewById(R.id.tvOpenAtRelative);
         mAddress = findViewById(R.id.tvAddressRelative);
         mPic = findViewById(R.id.imMerchant);
         mImgnoDiscount = findViewById(R.id.noDiscountImg);
@@ -163,9 +163,10 @@ public class Merchant extends AppCompatActivity {
 
                 mAddress.setText(response.body().getData().get(0).getAddress());
                 bundle.putString("address",response.body().getData().get(0).getAddress());
+                bundle.putString("image",response.body().getData().get(0).getPhoto());
 
-                mClose.setText("- 22.00" );
-                mOpen.setText("10.00 " );
+//                mClose.setText("- 22.00" );
+////                mOpen.setText("10.00 " );
                 List<ItemOnMerchant> items = response.body().getData().get(0).getItem();
 
 
@@ -179,7 +180,7 @@ public class Merchant extends AppCompatActivity {
                 if(mList.size() == 0){
                     recyclerView.setVisibility(View.GONE);
                     mImgnoDiscount.setVisibility(View.VISIBLE);
-                    mDiscountText.setText("No Discount Today");
+                    mDiscountText.setText("This Merchant is empty");
                 }
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(Merchant.this));

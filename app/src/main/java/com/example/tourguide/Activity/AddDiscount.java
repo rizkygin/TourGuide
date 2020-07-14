@@ -30,9 +30,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -64,9 +66,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -84,7 +88,7 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
     int path;
     Boolean selectedImage = false;
     String urlImage;
-    private static final String IMAGE_DIRECTORY = "/demonuts";
+    private static final String IMAGE_DIRECTORY = "/tourGuide";
     private static final String TAG = "AddDiscount";
     private static final int PERMISSION_CODE = 1001;
     private static final int INTENT_REQUEST_CODE = 100;
@@ -117,6 +121,8 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
     int item_id;
     int value;
     String max_cut;
+
+    boolean warn = false;
     private boolean changeClicked = false;
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     Calendar now = Calendar.getInstance();
@@ -198,6 +204,8 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
             mName.setHelperText("Enter in Percent");
             mName.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER); //Sets input type to Number Only
             mNormalPrice.setHint("Max Cutting Price"); //Max Cutting Price
+            mNormalPrice.setHelperText("Let it empty if you want!");
+            mNormalPrice.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
             mDescription.getEditText().setText(editTextDesscription);
 //            mStartDate.setHint("Enter start Promo");
 //            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -228,7 +236,7 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
             });
 //            mEndDate.setHint("Enter end of Promo");
 //            mEndDate.setText(String.valueOf(Calendar.getInstance().getTime()));
-            mStartDate.setText(formatter.format(calendar.getTime()));
+            mEndDate.setText(formatter.format(calendar.getTime()));
             final int yearEnd = calendar.get(Calendar.YEAR);
             final int monthEnd = calendar.get(Calendar.MONTH);
             final int dayEnd = calendar.get(Calendar.DAY_OF_MONTH);
@@ -253,10 +261,14 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
             mButton_save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(storePromoValidate()){
-                        storePromo();
-                        mButton_save.setClickable(false);
+                    try {
+                        if(storePromoValidate()){
+                            storePromo();
+                            mButton_save.setClickable(false);
 
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
                 }
             });
@@ -264,8 +276,12 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
         }else if (MODE.equals("UpdateItem")){
             mJudul.setText("Update Item");
             URL url = null;
-                String patch = intent.getExtras().getString("StringURLImage");
+            String patch = intent.getExtras().getString("StringURLImage");
 //                url = new URL(patch);
+
+            mName.getEditText().setText(intent.getExtras().getString("Name"));
+            mDescription.getEditText().setText(intent.getExtras().getString("Description"));
+            mNormalPrice.getEditText().setText(String.valueOf(intent.getExtras().getInt("Price")));
 
             Glide.with(this)
                     .asBitmap()
@@ -274,8 +290,8 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
                         @Override
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                             imageView.setImageBitmap(resource);
-                            imageUrl = Uri.parse(saveImage(resource));
-                            Log.d(TAG, "onResourceReady: "+ imageUrl);
+//                            imageUrl = Uri.parse(saveImage(resource));
+//                            Log.d(TAG, "onResourceReady: "+ imageUrl);
                         }
 
                         @Override
@@ -291,17 +307,17 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
             mEndDateRelative.setVisibility(View.GONE);
             mStartDate.setVisibility(View.GONE);
             mEndDate.setVisibility(View.GONE);
-            if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_DENIED){
-                //permission not granted, request permission
-                String[] permission = {Manifest.permission.READ_EXTERNAL_STORAGE};
-                //show pop up
-                requestPermissions(permission,PERMISSION_CODE);
-            }
+//            if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+//                    == PackageManager.PERMISSION_DENIED){
+//                //permission not granted, request permission
+//                String[] permission = {Manifest.permission.READ_EXTERNAL_STORAGE};
+//                //show pop up
+//                requestPermissions(permission,PERMISSION_CODE);
+//            }
             mButton_save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(validate()){
+                    if(validateUpdate()){
                         mButton_save.setClickable(false);
                         Log.d(TAG, "onClick: imageUrl "+ imageUrl);
                         updateItem(imageUrl);
@@ -317,25 +333,86 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
 
     }
 
+    private boolean validateUpdate() {
+        this.mNameType = mName.getEditText().getText().toString();
+        this.mDescriptionType = mDescription.getEditText().getText().toString();
+        this.mPrice = mNormalPrice.getEditText().getText().toString();
 
-    private boolean storePromoValidate() {
+
+//        if(!selectedImage){
+//            mButton.setTextColor(getResources().getColor(R.color.design_default_color_error));
+//            Drawable cant = getDrawable(R.drawable.cant_go);
+//            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+//            imageView.setImageDrawable(cant);
+//            mProggres.setVisibility(View.GONE);
+//            return false;
+//        }
+        if(mNameType.isEmpty()){
+            mName.setError("Is Not Valid Email");
+            mProggres.setVisibility(View.GONE);
+
+            return false;
+        }
+        if(mDescriptionType.isEmpty()){
+            mDescription.setError("Please Fill The Field");
+            mProggres.setVisibility(View.GONE);
+
+            return false;
+        }
+        if(mPrice.isEmpty()){
+            mNormalPrice.setError("You cant set item to free");
+            mProggres.setVisibility(View.GONE);
+
+            return false;
+        }
+
+        mProggres.setVisibility(View.GONE);
+
+        return true;
+
+    }
+
+
+    private boolean storePromoValidate() throws ParseException {
         mProggres.setVisibility(View.VISIBLE);
+        Intent intent = getIntent();
 
+        int ori = intent.getExtras().getInt("oriPrice");
         this.max_cut = mNormalPrice.getEditText().getText().toString();
-        if(mName.getEditText().toString()!=null){
+
+        if(!mName.getEditText().getText().toString().isEmpty()){
             this.value = Integer.parseInt(mName.getEditText().getText().toString());
         }
         this.descriptionStorePromo = mDescription.getEditText().getText().toString();
         this.mStartDatePromo = mStartDate.getText().toString();
         this.mEndDatePromo = mEndDate.getText().toString();
-        if(max_cut.isEmpty()){
-            mNormalPrice.setError("Fill this field please!");
-            mProggres.setVisibility(View.GONE);
+//        if(max_cut.isEmpty()){
+//            mNormalPrice.setError("Fill this field please!");
+//            mProggres.setVisibility(View.GONE);
+//
+//            return false;
+//        }
+        Date start = formatter.parse(mStartDatePromo);
+        Date end = formatter.parse(mEndDatePromo);
 
+        if(start.compareTo(end) > 0){
+            mEndDate.setText("You cant set start Time greater than the end time");
+            mEndDate.setTextColor(getResources().getColor(R.color.warning));
+            mProggres.setVisibility(View.GONE);
             return false;
         }
+        if(!mNormalPrice.getEditText().getText().toString().isEmpty()){
+            if(Integer.valueOf(mNormalPrice.getEditText().getText().toString()) > ori){
+                mNormalPrice.setError("You cant set this cut to more than the original price");
+                mProggres.setVisibility(View.GONE);
+
+                return false;
+            }
+        }
+
         if(mName.getEditText().getText().toString().isEmpty()){
             mName.setError("Fill this field please!");
+            mProggres.setVisibility(View.GONE);
             mProggres.setVisibility(View.GONE);
 
             return false;
@@ -358,13 +435,18 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
 
             return false;
         }
-        if(mEndDatePromo.equals(String.valueOf(formatter.format(Calendar.getInstance().getTime())))){//max cut
-//            mEndDate.setError("Fill this field please!");
-            helperEndDate.setText("Are you sure to setting on this date ?");
-            mProggres.setVisibility(View.GONE);
-
+        if(!warn){
+            if(mNormalPrice.getEditText().getText().toString().isEmpty()){
+                mNormalPrice.setError("Do not include maximum cutting prize ?");
+                mNormalPrice.setBoxStrokeColor(getResources().getColor(R.color.bg_food));
+                mNormalPrice.setErrorTextColor(ColorStateList.valueOf(getResources().getColor(R.color.bg_food)));
+                mProggres.setVisibility(View.GONE);
+                warn = true;
+                mProggres.setVisibility(View.GONE);
+            }
             return false;
         }
+
         return true;
     }
     public Bitmap getBitmapFromURL(String strURL) {
@@ -383,7 +465,14 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
     }
 
     private void storePromo() {
-        Call<JsonResponse> call = Api.getClient().storePromoApi("Bearer "+ token,item_id,value,descriptionStorePromo,descriptionStorePromo,max_cut,mStartDatePromo,mEndDatePromo);
+        Call<JsonResponse> call;
+        if(max_cut == null && warn){
+            call = Api.getClient().storePromoApi("Bearer "+ token,item_id,value,descriptionStorePromo,descriptionStorePromo,mStartDatePromo,mEndDatePromo);
+
+        }else {
+            call = Api.getClient().storePromoApi("Bearer "+ token,item_id,value,descriptionStorePromo,descriptionStorePromo,max_cut,mStartDatePromo,mEndDatePromo);
+
+        }
         call.enqueue(new Callback<JsonResponse>() {
             @Override
             public void onResponse(Call<JsonResponse> call, Response<JsonResponse> response) {
@@ -420,7 +509,7 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
             return false;
         }
         if(mNameType.isEmpty()){
-            mName.setError("Is Not Valid Email");
+            mName.setError("Fill this field please");
             mProggres.setVisibility(View.GONE);
 
             return false;
@@ -446,20 +535,26 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
     private void updateItem(Uri uri) {
 
 
+        Call<MerchantItemUpdate> call;
+
 //            Log.d(TAG, "uploadImage: Uri " + uriUpdateItem);
+        if(uri != null){
             try {
                 requestFile =
                         RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(imageUrl));
                 if(uri != null){
                     //FileUtil for get from gallery
                     originalFile =  FileUtil.from(AddDiscount.this,uri);
-                     requestFile =
+                    requestFile =
                             RequestBody.create(MediaType.parse("multipart/form-data"), originalFile);
                 }
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+        }
+
 
 //        RequestBody filePart = RequestBody.create(
 //                MediaType.parse("multipart/form-data"),originalFile);
@@ -481,11 +576,17 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
 
             Log.d(TAG, "uploadImage: selectedImage " + selectedImagePath);
             Log.d(TAG, "uploadImage: FileUtilsSelectedImage " + originalFile);
-            MultipartBody.Part photo =
-                    MultipartBody.Part.createFormData("photo", "NameImage",requestFile);
+
             int item_id = getIntent().getExtras().getInt("item_id",0);
 
-            Call<MerchantItemUpdate> call = Api.getClient().updateItem("Bearer " + token,photo,requestMerchant_id,reqmNameType,reqmDescriptionType,reqmPrice,item_id,reqmMethod);
+            if(requestFile!=null){
+                MultipartBody.Part photo =
+                        MultipartBody.Part.createFormData("photo", "NameImage",requestFile);
+                 call = Api.getClient().updateItem("Bearer " + token,photo,requestMerchant_id,reqmNameType,reqmDescriptionType,reqmPrice,item_id,reqmMethod);
+
+            }else {
+                 call = Api.getClient().updateItemNoPic("Bearer " + token,requestMerchant_id,reqmNameType,reqmDescriptionType,reqmPrice,item_id,reqmMethod);
+            }
             mProggres.setVisibility(View.VISIBLE);
             mButton_save.setClickable(false);
             call.enqueue(new Callback<MerchantItemUpdate>() {
@@ -594,12 +695,12 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
             File f = new File(wallpaperDirectory, Calendar.getInstance()
                     .getTimeInMillis() + ".jpg");
             f.createNewFile();
-            FileOutputStream fo = new FileOutputStream(f);
-            fo.write(bytes.toByteArray());
-            MediaScannerConnection.scanFile(this,
-                    new String[]{f.getPath()},
-                    new String[]{"image/jpeg"}, null);
-            fo.close();
+//            FileOutputStream fo = new FileOutputStream(f);
+//            fo.write(bytes.toByteArray());
+//            MediaScannerConnection.scanFile(this,
+//                    new String[]{f.getPath()},
+//                    new String[]{"image/jpeg"}, null);
+//            fo.close();
             Log.d(TAG, "File Saved::--->" + f.getAbsolutePath());
 
             mButton.setText("Change Image");

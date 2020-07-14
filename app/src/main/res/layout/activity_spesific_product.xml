@@ -6,17 +6,6 @@
     android:background="#F0F7F8"
     android:layout_height="match_parent"
     tools:context=".Activity.SpesificProduct">
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/backButton"
-            android:translationZ="1dp"
-            android:background="@drawable/mapbox_ic_arrow_back"
-            android:layout_width="30dp"
-            android:layout_height="30dp"/>
-    </RelativeLayout>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -24,6 +13,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+            <Button
+                android:id="@+id/backButton"
+                android:translationZ="1dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:background="@drawable/mapbox_ic_arrow_back"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
             <ImageView
                 android:id="@+id/imSpesificProduck"
                 android:cropToPadding="true"
@@ -40,14 +37,24 @@
                 <TextView
                     android:id="@+id/endDate"
                     android:layout_alignParentLeft="true"
-                    android:layout_margin="10dp"
                     android:textStyle="bold"
                     android:textSize="15dp"
+                    android:layout_marginTop="4dp"
                     android:textColor="#FFE200"
-                    android:paddingLeft="10dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
                     android:text="Untill  December, 12 2019"
                     android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/maxCut"
+                    android:layout_alignLeft="@id/endDate"
+                    android:textSize="15dp"
+                    android:textColor="#FFE200"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Max cutting prize : 2000"
+                    android:layout_below="@id/endDate"/>
+
                 <TextView
                     android:id="@+id/valueDisc"
                     android:layout_alignParentRight="true"
@@ -81,7 +88,6 @@
                 android:id="@+id/qrCodeImage"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/bottom"
                 app:layout_constraintTop_toBottomOf="@+id/addressText"
                 android:background="@drawable/chaced_foreground"
                 android:layout_width="175dp"
@@ -97,9 +103,31 @@
                 app:layout_constraintTop_toBottomOf="@id/qrCodeImage"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/bottom"
                 android:layout_width="96dp"
                 android:layout_height="50dp"/>
+            <RelativeLayout
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/saveButton"
+                android:background="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/seeToko"
+                    android:background="@drawable/ic_account_balance_black_24dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/seeToko"
+                    android:layout_marginLeft="5dp"
+                    android:text="MERCHANT"
+                    android:textColor="@android:color/black"
+                    android:textSize="8dp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

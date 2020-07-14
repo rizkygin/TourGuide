@@ -96,16 +96,18 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
         Glide.with(mContext)
                 .load(urlPhoto)
                 .into(holder.mImage);
-        holder.mPrice.setText("Rp. " + String.valueOf(mData.get(position).getPrice()));
+
 
         if(!mData.get(position).getPromo().isEmpty()){
             List<Promo> promos = mData.get(position).getPromo();
             Promo promo = mData.get(position).getPromo().get(promos.size()-1);
             int value = promo.getValue();
             int originalPrice = mData.get(position).getPrice();
+            int max_cut = promo.getMax_cut();
             holder.mDisc.setText(String.valueOf(value));
 //            holder.mOri.setText("Original Price " + result(value,originalPrice));
-            holder.mPrice.setText("Rp. " + result(value,originalPrice));
+            holder.mPrice.setText("Rp. " + result(value,originalPrice,max_cut));
+            Log.d(TAG, "onBindViewHolder: " + mData.get(position).getName() + " Value " + value + " originalPrice " + originalPrice + " Results ");
             int positionswip = holder.getAdapterPosition();
             holder.mOri.setText("Rp " + originalPrice);
             holder.mRelative.setOnClickListener(new View.OnClickListener() {
@@ -117,11 +119,13 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
                     bundle.putString("StringURLImage",mData.get(position).getPhoto());
                     Log.d(TAG, "onClick: StringURLImage "+ urlPhoto );
                     bundle.putString("StringDescription",description);
-                    bundle.putString("StringAddress",address);
+                    bundle.putString("StringAddress",promo.getDescription());
                     bundle.putInt("Value",mData.get(position).getPromo().get(0).getValue());
+                    bundle.putInt("Max_cut",max_cut);
                     bundle.putString("StringEndDate",mData.get(position).getPromo().get(0).getEndDate());
                     bundle.putInt("merchantID",path);
                     bundle.putInt("pathItem",promo.getId());
+                    Log.d(TAG, "onClick: " + promo.getId());
 
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);
@@ -138,6 +142,7 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
             holder.mbgDisc.setVisibility(View.GONE);
             holder.mDisc.setVisibility(View.GONE);
             holder.mOri.setVisibility(View.GONE);
+            holder.mPrice.setText("Rp. " + String.valueOf(mData.get(position).getPrice()));
 
         }
 
@@ -147,6 +152,9 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putString("StringURLImage",mData.get(position).getPhoto());
+                bundle.putString("Name",mData.get(position).getName());
+                bundle.putInt("Price",mData.get(position).getPrice());
+                bundle.putString("Description",mData.get(position).getDescription());
                 bundle.putString("Mode","UpdateItem");
                 bundle.putInt("Merhant_id",path);
                 bundle.putInt("item_id",mData.get(position).getId());
@@ -210,10 +218,16 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
         });
     }
 
-    private String result(int value, int originalPrice) {
-        int result;
-        result = originalPrice - (value/100 * originalPrice);
-        return String.valueOf(result);
+    private String result(int value, int originalPrice,int max) {
+        double result;
+        int resultss;
+        result = value*originalPrice/100;
+        if(result <= max){
+            resultss = (int) (originalPrice - result);
+        }else{
+            resultss = (originalPrice - max);
+        }
+        return String.valueOf(resultss);
     }
 
     @Override
@@ -230,6 +244,7 @@ public class ItemMerchant extends RecyclerView.Adapter<ItemMerchant.ViewHolder> 
         bundle.putString("StringURLImage",photo);
         bundle.putString("StringDescription",description);
         bundle.putInt("Item_id",item_id);
+        bundle.putInt("oriPrice",mData.get(adapterPosition).getPrice());
         bundle.putString("Mode","AddPromo");
         bundle.putInt("Merhant_id",path);
 //        bundle.putString("StringAddress",address);

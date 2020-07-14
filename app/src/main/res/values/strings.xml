@@ -17,7 +17,7 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
     <string name="title_activity_maps">Map</string>
-    <string name="mapbox_access_token">MAPBOX_ACCESS_TOKEN</string>
+    <string name="mapbox_access_token">pk.eyJ1Ijoicml6a3lnaW43IiwiYSI6ImNrYmdrMjE0eDE2N20ycG81YWQzdjR0MmQifQ.AZ8yDxM2n6XXUVKzu9n8dQ</string>
     <string name="selected_place_info">Selected location information:\n%1$s</string>
 
     <string name="go_to_picker_activity">Go to place picker activity</string>

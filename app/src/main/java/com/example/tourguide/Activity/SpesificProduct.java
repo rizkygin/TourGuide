@@ -21,9 +21,11 @@ import com.example.tourguide.service.Screenshot;
 import com.example.tourguide.service.SvgSoftwareLayerSetter;
 import com.google.android.material.button.MaterialButton;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.PictureDrawable;
 import android.media.MediaScannerConnection;
@@ -42,7 +44,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
@@ -51,6 +56,7 @@ import retrofit2.Response;
 
 public class SpesificProduct extends AppCompatActivity {
 
+    private static final int PERMISSION_CODE = 1001;
     Bitmap bitmapQr;
     String uriImage;
     private RequestBuilder<PictureDrawable> requestBuilder;
@@ -61,17 +67,24 @@ public class SpesificProduct extends AppCompatActivity {
     int path;
     int merchant_id;
     int value;
-    private String urlPhoto,description,address,urlQR,endDate;
+    private String urlPhoto,description,address,urlQR,endDate,maxCut;
     MaterialButton mSaveButton;
     Button mBackButton;
+    Date date;
+    String mMode;
+    SimpleDateFormat formatter,output;
     private ImageView mImage,mQrCodeImage;
-    private TextView mEndDate,mDisc,mDescriptionText,mAddressText;
+    Intent intent ;
+    private TextView mEndDate,mDisc,mDescriptionText,mAddressText,mMaxCut;
+    ImageView openMerchant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spesific_product);
 
+        formatter= new SimpleDateFormat("yyyy-MM-dd");
+        output = new SimpleDateFormat("MMMM, dd yyyy");
         mImage = findViewById(R.id.imSpesificProduck);
         mSaveButton = findViewById(R.id.saveButton);
         mBackButton = findViewById(R.id.backButton);
@@ -80,17 +93,27 @@ public class SpesificProduct extends AppCompatActivity {
         mDisc = findViewById(R.id.valueDisc);
         mDescriptionText = findViewById(R.id.descriptionText);
         mAddressText = findViewById(R.id.addressText);
+        mMaxCut = findViewById(R.id.maxCut);
+        openMerchant = findViewById(R.id.seeToko);
 
-        Intent intent = getIntent();
 
+
+        intent = getIntent();
+        merchant_id = intent.getExtras().getInt("merchantID",0);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SpesificProduct.super.onBackPressed();
+            }
+        });
+        openMerchant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SpesificProduct.this, Merchant.class);
 
                 Bundle bundle = new Bundle();
-                bundle.putInt("idMerchant" , intent.getIntExtra("merchantID",0));
+                bundle.putInt("idMerchant" , merchant_id);
 
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -99,48 +122,57 @@ public class SpesificProduct extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         token = preferences.getString("token", "");
 
+        mMode = intent.getExtras().getString("MODE",null);
+
+        setAllTextview();
+
+
+
+
+
+    }
+
+    private void setAllTextview() {
         urlPhoto = intent.getStringExtra("StringURLImage");
-        Log.d(TAG, "onClick: StringURLImage 2"+ urlPhoto );
-        description = intent.getStringExtra("StringDescription");
+        description = intent.getExtras().getString("StringDescription");
         address = intent.getStringExtra("StringAddress");
+        maxCut = String.valueOf(intent.getIntExtra("Max_cut",0));
+
         endDate = intent.getStringExtra("StringEndDate");
-        path = intent.getIntExtra("pathItem",0);
-        value = intent.getIntExtra("Value",0);
-        merchant_id = intent.getIntExtra("merchantID",0);
-        Glide.with(this)
-                .asBitmap()
-                .load(urlPhoto)
-                .into(mImage);
+            try {
+                date = formatter.parse(endDate);
 
-        mSaveButton.setVisibility(View.GONE);
-        mSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: Clicked Button Save");
-
-                Bitmap save = Screenshot.takesScreenshotOfRootView(mQrCodeImage);
-
-                uriImage = saveImage(save);
-                Log.d(TAG, "onClick: bitmapQr " + bitmapQr);
-
-                Toast.makeText(SpesificProduct.this, "Qr Code Success have been saved", Toast.LENGTH_SHORT).show();
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-        });
-        requestBuilder = GlideApp.with(this)
-                .as(PictureDrawable.class)
-                .placeholder(R.drawable.chaced_foreground)
-                .listener(new SvgSoftwareLayerSetter());
-        callAPI();
+            path = intent.getIntExtra("pathItem",0);
+            value = intent.getIntExtra("Value",0);
+            Glide.with(this)
+                    .asBitmap()
+                    .load(urlPhoto)
+                    .into(mImage);
+
+            mSaveButton.setVisibility(View.GONE);
+
+            requestBuilder = GlideApp.with(this)
+                    .as(PictureDrawable.class)
+                    .placeholder(R.drawable.chaced_foreground)
+                    .listener(new SvgSoftwareLayerSetter());
+            callAPI();
+
 
 
 
 //        getBitmapInterfaceClick.setBitmap();
 
-        mEndDate.setText("Untill " + endDate);
-        mDisc.setText("" + value + " %");
-        mAddressText.setText(address);
-        mDescriptionText.setText(description);
-
+            mEndDate.setText("Untill " + output.format(date));
+            mDisc.setText("" + value + " %");
+            mAddressText.setText(address);
+            mMaxCut.setText("Max Cutting : Rp." + maxCut);
+            if(maxCut.equals("0")){
+                mMaxCut.setVisibility(View.GONE);
+            }
+            mDescriptionText.setText(description);
 
 
     }
@@ -162,7 +194,6 @@ public class SpesificProduct extends AppCompatActivity {
         if (!wallpaperDirectory.exists()) {
             wallpaperDirectory.mkdirs();
         }
-
         try {
             File f = new File(wallpaperDirectory, Calendar.getInstance()
                     .getTimeInMillis() + ".jpg");
@@ -189,17 +220,39 @@ public class SpesificProduct extends AppCompatActivity {
             @Override
             public void onResponse(Call<GenerateQR> call, Response<GenerateQR> response) {
                 if(response.isSuccessful()){
+
                     urlQR = response.body().getResult();
-                    Uri uri = Uri.parse(urlQR);
-                    Log.d(TAG, "onResponse: " + urlQR);
+                    if(urlQR != null){
+                        Log.d(TAG, "onResponse: " + urlQR);
+                        Uri uri = Uri.parse(urlQR);
 //                    loadNet(uri);
-                    GlideApp.with(SpesificProduct.this)
-                            .load(uri)
+                        GlideApp.with(SpesificProduct.this)
+                                .load(uri)
 //                            .apply(RequestOptions.centerCropTransform())
-                            .into(mQrCodeImage);
+                                .into(mQrCodeImage);
 
-                    mSaveButton.setVisibility(View.VISIBLE);
-
+                        mSaveButton.setVisibility(View.VISIBLE);
+                        mSaveButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                                        == PackageManager.PERMISSION_DENIED){
+                                    //permission not granted, request permission
+                                    String[] permission = {Manifest.permission.READ_EXTERNAL_STORAGE};
+                                    //show pop up
+                                    requestPermissions(permission,PERMISSION_CODE);
+                                }
+                                Log.d(TAG, "onClick: Clicked Button Save");
+                                Bitmap save = Screenshot.takesScreenshotOfRootView(mQrCodeImage);
+                                uriImage = saveImage(save);
+                                Log.d(TAG, "onClick: bitmapQr " + uriImage);
+                                Toast.makeText(SpesificProduct.this, "Qr Code Success have been saved", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    else{
+                        mQrCodeImage.setImageDrawable(getResources().getDrawable(R.drawable.qr2));
+                    }
                 }
             }
 
@@ -212,6 +265,6 @@ public class SpesificProduct extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //nothing
+        super.onBackPressed();
     }
 }

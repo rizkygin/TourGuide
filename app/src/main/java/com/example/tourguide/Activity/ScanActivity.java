@@ -166,10 +166,8 @@ public class ScanActivity extends AppCompatActivity{
                         }
                     }
 
-                    description.setText(" User Guide will claim " + response.body().getPromo().getDescription() + " Valid untiil "+ response.body().getPromo().getEnd_time());
-                    if(response.body().getPromo().getEnd_time() == null){
-                        description.setText(" User Guide will claim " + response.body().getPromo().getDescription() + " Valid untiil forever!" );
-                    }
+                    description.setText(" User Guide will claim points sooner !" );
+
                     builder.setView(dialog);
 
                     AlertDialog alertDialog = builder.create();

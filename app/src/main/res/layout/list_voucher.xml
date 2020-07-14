@@ -71,7 +71,7 @@
                     android:layout_marginBottom="10dp"
                     android:layout_alignRight="@id/voucherNominal"
                     android:layout_alignParentBottom="true"
-                    android:text="Open Merchant"
+                    android:text="Open Promo"
                     android:textColor="#05B29D" />
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>

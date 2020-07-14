@@ -230,11 +230,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
         requestMapPermission();
         Log.d(TAG, "isReady " + isReady);
-
         googleMap.setTrafficEnabled(true);
         float zoomLevel = 16.0f;
-
-
     }
 
     private void requestMapPermission() {

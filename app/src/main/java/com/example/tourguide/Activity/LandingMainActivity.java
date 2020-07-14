@@ -12,6 +12,7 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.tourguide.Activity.ui.home.HomeFragment;
 import com.example.tourguide.model.MerchantShow;
+import com.example.tourguide.model.User;
 import com.example.tourguide.service.Api;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,6 +24,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -54,6 +56,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.tourguide.R;
 import android.view.Menu;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,7 +87,37 @@ public class LandingMainActivity extends AppCompatActivity implements Navigation
     String nameUser;
 
     private String TAG = "LandingMainActivity";
+    private int mInterval = 5000; // 5 seconds by default, can be changed later
+    private Handler mHandler;
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopRepeatingTask();
+    }
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                updateStatus(); //this function can change value of mInterval.
+            } finally {
+                // 100% guarantee that this always happens, even if
+                // your update method throws an exception
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
+
+
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +133,8 @@ public class LandingMainActivity extends AppCompatActivity implements Navigation
         cityComplete = getSharedPreferences("UserData",Context.MODE_PRIVATE).getString("SearchedCity","Search City");
         searchView.setText(cityComplete);
 
+        mHandler = new Handler();
+        startRepeatingTask();
 
         SharedPreferences sharedPreferences = getSharedPreferences("UserData",Context.MODE_PRIVATE);
         merchantLogin = sharedPreferences.getInt("merchant_id",0);
@@ -287,5 +322,50 @@ public class LandingMainActivity extends AppCompatActivity implements Navigation
     public void setsCategoryId(int categoryId) {
         HomeFragment homeFragment = new HomeFragment();
         homeFragment.callApiFiltered(categoryId,LandingMainActivity.this);
+    }
+    private void updateStatus() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+        Call<User> call = Api.getClient().login(sharedPreferences.getString("email"," "), sharedPreferences.getString("password"," "));
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if(response.isSuccessful()){
+
+                    String point = sharedPreferences.getString("points","0");
+                    Log.d(TAG, "onResponse: Checking point" );
+                    if(!point.equals(response.body().getUser().getPoints())){
+                        SharedPreferences.Editor editor = getSharedPreferences("UserData",Context.MODE_PRIVATE).edit();
+                        editor.putString("points",response.body().getUser().getPoints());
+                        editor.commit();
+                        Log.d(TAG, "onResponse: different point" );
+                        android.app.AlertDialog.Builder builder;
+                        builder = new android.app.AlertDialog.Builder(LandingMainActivity.this);
+                        View dialog;
+                        dialog = LayoutInflater.from(LandingMainActivity.this).inflate(R.layout.custom_dialog_redeem,null,false);
+                        TextView name = dialog.findViewById(R.id.mName);
+                        name.setText(sharedPreferences.getString("name"," "));
+                        TextView description = dialog.findViewById(R.id.info);
+                        Button mButton = dialog.findViewById(R.id.buttonOk);
+                        description.setText("Your Point's now " + response.body().getUser().getPoints());
+                        builder.setView(dialog);
+                        android.app.AlertDialog alertDialog = builder.create();
+
+                        mButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertDialog.cancel();
+                            }
+                        });
+                        alertDialog.show();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+            }
+        });
     }
 }

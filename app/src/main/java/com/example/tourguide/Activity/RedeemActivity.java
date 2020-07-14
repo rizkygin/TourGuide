@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tourguide.Adapter.RecyclerViewVoucherAdapter;
 import com.example.tourguide.Adapter.Voucher;
 import com.example.tourguide.R;
+import com.example.tourguide.model.ItemsVoucher;
 import com.example.tourguide.model.PromoSelf;
 import com.example.tourguide.service.Api;
 
@@ -91,7 +92,8 @@ public class RedeemActivity extends AppCompatActivity {
                     for(Voucher voucher : vouchers){
                         Log.d(TAG, "onResponse: "+ voucher.getId());
                         Log.d(TAG, "onResponse: "+ voucher.getPoint());
-                        mList.add(new Voucher(voucher.getDescription(),voucher.getValue(),true,voucher.getEnd_time(),voucher.getPoint(),voucher.getId(),voucher.getMerchant_id()));
+                        ItemsVoucher items = voucher.getItem();
+                        mList.add(new Voucher(voucher.getDescription(),voucher.getValue(),true,voucher.getEnd_time(),voucher.getPoint(),voucher.getId(),voucher.getMerchant_id(),items,voucher.getMax_cut()));
 //                        Log.d(TAG, "onResponse: " + " " + voucher.getValue());
                     }
                     recyclerView.setHasFixedSize(true);

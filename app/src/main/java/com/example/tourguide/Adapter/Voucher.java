@@ -2,11 +2,15 @@ package com.example.tourguide.Adapter;
 
 import android.accessibilityservice.GestureDescription;
 
+import com.example.tourguide.model.ItemsVoucher;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class Voucher {
     private int id;
     private int item_id;
+    private int max_cut;
     private int value;
     private String description;
     private String category;
@@ -18,11 +22,12 @@ public class Voucher {
     private String nameStore;
     private Integer nominal;
     private Boolean status;
+    private ItemsVoucher item;
 
     public Voucher() {
     }
 
-    public Voucher(String description, int value, Boolean status,String end_time,int point,int id,int merchant_id) {
+    public Voucher(String description, int value, Boolean status,String end_time,int point,int id,int merchant_id,ItemsVoucher item,int max_cut) {
         this.description = description;
         this.value = value;
         this.status = status;
@@ -30,6 +35,16 @@ public class Voucher {
         this.point = point;
         this.id = id;
         this.merchant_id = merchant_id;
+        this.item = item;
+        this.max_cut = max_cut;
+    }
+
+    public int getMax_cut() {
+        return max_cut;
+    }
+
+    public ItemsVoucher getItem() {
+        return item;
     }
 
     public int getMerchant_id() {
@@ -73,6 +88,8 @@ public class Voucher {
     public int getId() {
         return id;
     }
+
+
 
     public int getItem_id() {
         return item_id;

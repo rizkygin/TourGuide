@@ -35,7 +35,6 @@ public class LoginActivity extends AppCompatActivity {
         token = preferences.getString("token",null);
         if(token != null){
             Intent intent = new Intent(LoginActivity.this, LandingMainActivity.class);
-            intent.putExtra("SearchedCity","Search Here");
             startActivity(intent);
         }
 

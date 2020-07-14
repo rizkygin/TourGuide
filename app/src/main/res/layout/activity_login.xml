@@ -30,8 +30,6 @@
         android:textStyle="bold|italic"
         android:text="@string/travel_guide_reward"/>
 
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/login"
         android:layout_width="280dp"
@@ -68,7 +66,5 @@
         android:layout_height="wrap_content"
         android:text="REGISTER"
         android:layout_marginBottom="20dp"/>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

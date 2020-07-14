@@ -76,6 +76,15 @@ public interface UserClient {
                                         @Part("price") RequestBody price,
                                         @Path("iditem") int iditem,
                                         @Part("_method") RequestBody method);
+    @Multipart
+    @POST("items/{iditem}")
+    Call<MerchantItemUpdate> updateItemNoPic(@Header("Authorization") String token,
+                                        @Part("merchant_id") RequestBody merchant_id,
+                                        @Part("name") RequestBody name,
+                                        @Part("description") RequestBody description,
+                                        @Part("price") RequestBody price,
+                                        @Path("iditem") int iditem,
+                                        @Part("_method") RequestBody method);
     @FormUrlEncoded
     @POST("promo")
     Call<JsonResponse> storePromoApi(@Header("Authorization") String token,
@@ -86,6 +95,15 @@ public interface UserClient {
                                  @Field("max_cut") String max_cut,
                                  @Field("start_time")String start_time,
                                  @Field("end_time")String end_time);
+    @FormUrlEncoded
+    @POST("promo")
+    Call<JsonResponse> storePromoApi(@Header("Authorization") String token,
+                                     @Field("item_id") int item_id,
+                                     @Field("value") int value,
+                                     @Field("description")String description,
+                                     @Field("category")String category,
+                                     @Field("start_time")String start_time,
+                                     @Field("end_time")String end_time);
     @DELETE("items/{id}")
     Call<JsonResponse> deleteItemMerhcant(@Header("Authorization") String token,
                                           @Path("id") int id);
@@ -130,6 +148,15 @@ public interface UserClient {
                                       @Part("longitude")RequestBody longitude,
                                       @Part("description")RequestBody description,
                                       @Part MultipartBody.Part photo,
+                                      @Part("_method") RequestBody method);
+    @Multipart
+    @POST("merchant/update")
+    Call<JsonResponse> updateMerchant(@Header("Authorization") String token,
+                                      @Part("address")RequestBody address,
+                                      @Part("name")RequestBody name,
+                                      @Part("latitude")RequestBody latitude,
+                                      @Part("longitude")RequestBody longitude,
+                                      @Part("description")RequestBody description,
                                       @Part("_method") RequestBody method);
     @GET("tourism")
     Call<TourismIndex> tourismIndex(@Header("Authorization") String token);

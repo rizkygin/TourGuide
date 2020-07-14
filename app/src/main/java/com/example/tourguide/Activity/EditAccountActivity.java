@@ -3,6 +3,10 @@ package com.example.tourguide.Activity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.tourguide.R;
 //import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 //import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -95,6 +99,8 @@ public class EditAccountActivity extends AppCompatActivity implements View.OnCli
 
         mImageView = findViewById(R.id.picOfProfileEA);
 
+
+
         mBack = findViewById(R.id.btnBackEA);
         mSave = findViewById(R.id.btnSaveEA);
         mSelectImage = findViewById(R.id.btnSelectImageEdit);
@@ -141,6 +147,20 @@ public class EditAccountActivity extends AppCompatActivity implements View.OnCli
                 prev.getExtras().getString("description"," "));
         mAddress.getEditText().setText(
                 prev.getExtras().getString("address"," "));
+        Glide.with(this)
+                .asBitmap()
+                .load(prev.getExtras().getString("image"))
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        mImageView.setImageBitmap(resource);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                    }
+                });
     }
 
 
@@ -213,14 +233,14 @@ public class EditAccountActivity extends AppCompatActivity implements View.OnCli
         addressStore = mAddress.getEditText().getText().toString();
         descriptionStore = mDescription.getEditText().getText().toString();
 
-        if(!selectedImage){
-            mSelectImage.setTextColor(getResources().getColor(R.color.design_default_color_error));
-            Drawable cant = getDrawable(R.drawable.cant_go);
-            mImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            mImageView.setImageDrawable(cant);
-            mProgress.setVisibility(View.GONE);
-            return false;
-        }
+//        if(!selectedImage){
+//            mSelectImage.setTextColor(getResources().getColor(R.color.design_default_color_error));
+//            Drawable cant = getDrawable(R.drawable.cant_go);
+//            mImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+//            mImageView.setImageDrawable(cant);
+//            mProgress.setVisibility(View.GONE);
+//            return false;
+//        }
         if(nameStore.isEmpty()){
             mName.setError("Fill the field above");
             return false;
@@ -238,20 +258,23 @@ public class EditAccountActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void updateStore(Uri uri){
+        Call<JsonResponse> call;
+        if(uri != null){
+            try {
+                if(uri != null){
+                    //FileUtil for get from gallery
+                    originalFile =  FileUtil.from(EditAccountActivity.this,uri);
+                    requestFile =
+                            RequestBody.create(MediaType.parse("multipart/form-data"), originalFile);
+                }
 
-        try {
-            if(uri != null){
-                //FileUtil for get from gallery
-                originalFile =  FileUtil.from(EditAccountActivity.this,uri);
-                requestFile =
-                        RequestBody.create(MediaType.parse("multipart/form-data"), originalFile);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+
         }
-        MultipartBody.Part photo =
-                MultipartBody.Part.createFormData("photo", originalFile.getName(),requestFile);
+
         String method = "PUT";
         RequestBody reqAddress =
                 RequestBody.create(MediaType.parse("multipart/form-data"),addressStore );
@@ -266,7 +289,15 @@ public class EditAccountActivity extends AppCompatActivity implements View.OnCli
         RequestBody reqmMethod =
                 RequestBody.create(MediaType.parse("multipart/form-data"), method);
 
-        Call<JsonResponse> call = Api.getClient().updateMerchant("Bearer " + token,reqAddress,reqName,reqLatitude,reqLongitude,reqDesc,photo,reqmMethod);
+        if(requestFile != null){
+            MultipartBody.Part photo =
+                    MultipartBody.Part.createFormData("photo", originalFile.getName(),requestFile);
+            call= Api.getClient().updateMerchant("Bearer " + token,reqAddress,reqName,reqLatitude,reqLongitude,reqDesc,photo,reqmMethod);
+
+        }else{
+            call= Api.getClient().updateMerchant("Bearer " + token,reqAddress,reqName,reqLatitude,reqLongitude,reqDesc,reqmMethod);
+        }
+
         call.enqueue(new Callback<JsonResponse>() {
             @Override
             public void onResponse(Call<JsonResponse> call, Response<JsonResponse> response) {

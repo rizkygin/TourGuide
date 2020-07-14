@@ -133,8 +133,6 @@ public class SignInActivity extends AppCompatActivity {
 
 
     private void login() {
-
-
         final Login login = new Login(emailtype, passwordtype);
         Call<User> call = userClient.login(emailtype, passwordtype);
 
@@ -150,6 +148,7 @@ public class SignInActivity extends AppCompatActivity {
                         editor.putString("token", token);
                         editor.putString("points", response.body().getUser().getPoints());
                         editor.putString("email", response.body().getUser().getEmail());
+                        editor.putString("password", passwordtype);
 //                        editor.putInt("merchant_id", 0);
                         editor.putString("name", response.body().getUser().getName());
                         editor.putString("role", response.body().getRole());

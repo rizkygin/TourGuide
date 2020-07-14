@@ -62,20 +62,13 @@
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/imMerchant">
 
-                            <TextView
-                                android:id="@+id/labelClose"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:gravity="start"
-                                android:text="Opening Hours"
-                                android:textStyle="bold" />
+
 
                             <TextView
                                 android:id="@+id/labelDesc"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@id/labelAddress"
+                                android:layout_below="@id/tvAddressRelative"
                                 android:text="Description"
                                 android:textStyle="bold" />
 
@@ -84,32 +77,15 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/labelAddress"
-                                android:layout_alignLeft="@id/tvOpenAtRelative"
                                 android:layout_toRightOf="@id/labelDesc"
                                 android:paddingLeft="10dp"
                                 android:text="Description" />
 
                             <TextView
-                                android:id="@+id/tvClosedRelative"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_toRightOf="@id/tvOpenAtRelative"
-                                android:text="Closed" />
-
-                            <TextView
-                                android:id="@+id/tvOpenAtRelative"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_toRightOf="@id/labelClose"
-                                android:paddingLeft="10dp"
-                                android:text="Open At" />
-
-
-                            <TextView
                                 android:id="@+id/labelAddress"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@id/labelClose"
+                                android:layout_alignParentTop="true"
                                 android:layout_alignBottom="@id/tvAddressRelative"
                                 android:gravity="top|start"
                                 android:text="Location"
@@ -119,11 +95,10 @@
                                 android:id="@+id/tvAddressRelative"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@id/tvOpenAtRelative"
-                                android:layout_alignLeft="@id/tvOpenAtRelative"
+                                android:layout_alignLeft="@id/tvDescRelative"
                                 android:layout_toRightOf="@id/labelAddress"
                                 android:paddingLeft="10dp"
-                                android:text="Address" />
+                                android:text="Location is near my location and we can make each other comfotbale" />
 
                         </RelativeLayout>
 

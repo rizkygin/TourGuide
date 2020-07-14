@@ -69,7 +69,7 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.RewardHold
                 if(Integer.parseInt(userPoint) >= mData.get(position).getPoint() ){
                     callApiRedeem(id_promo,position);
                 }else{
-                    Toast.makeText(mContext, "I'm Sorry but your point doesn't enough to claim this", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Not enough Point!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

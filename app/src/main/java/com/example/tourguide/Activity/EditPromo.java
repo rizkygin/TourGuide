@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,7 +43,7 @@ public class EditPromo extends AppCompatActivity {
     String rCallMethod = "PUT";
 
     TextInputLayout mDesc,mValue,mMaxCut;
-    TextView mStartDate,mEndDate;
+    TextView mStartDate,mEndDate,helperStartTime,helperEndTime;
     MaterialButton mButtonSave;
     ProgressBar mProgress;
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -58,12 +59,17 @@ public class EditPromo extends AppCompatActivity {
         mMaxCut = findViewById(R.id.epMaxCut);
         mStartDate = findViewById(R.id.mStartDateFix);
         mEndDate = findViewById(R.id.endDateFix);
+        helperStartTime = findViewById(R.id.helperTextSetting);
+        helperEndTime = findViewById(R.id.helperTextSettingEnd);
 
         mProgress = findViewById(R.id.epProgressBar);
         mButtonSave = findViewById(R.id.epSaveBtn);
 
-        Intent id = getIntent();
-        item_id = id.getStringExtra("id");
+        Intent intent = getIntent();
+        item_id = intent.getExtras().getString("id");
+        mDesc.getEditText().setText(intent.getExtras().getString("Description"));
+        mValue.getEditText().setText(intent.getExtras().getString("value"));
+        mMaxCut.getEditText().setText(intent.getExtras().getString("max_cut"));
         //Call SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         token = sharedPreferences.getString("token","");
@@ -72,7 +78,14 @@ public class EditPromo extends AppCompatActivity {
         final int year = calendar.get(Calendar.YEAR);
         final int month = calendar.get(Calendar.MONTH);
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
-        mStartDate.setText(formatter.format(calendar.getTime()));
+        String endDate = intent.getExtras().getString("Start_Date");
+        Date start = Calendar.getInstance().getTime();
+        try {
+            start = formatter.parse(endDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        mStartDate.setText(formatter.format(start));
         mStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,7 +106,14 @@ public class EditPromo extends AppCompatActivity {
         final int yearEnd = calendar.get(Calendar.YEAR);
         final int monthEnd = calendar.get(Calendar.MONTH);
         final int dayEnd = calendar.get(Calendar.DAY_OF_MONTH);
-        mEndDate.setText(formatter.format(calendar.getTime()));
+        String end_date = intent.getExtras().getString("End_Date");
+        Date end = Calendar.getInstance().getTime();
+        try {
+            end = formatter.parse(end_date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        mEndDate.setText(formatter.format(end));
         mEndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,10 +135,14 @@ public class EditPromo extends AppCompatActivity {
         mButtonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(validate()){
-                    mProgress.setVisibility(View.VISIBLE);
-                    mButtonSave.setClickable(false);
-                    updatePromo();
+                try {
+                    if(validate()){
+                        mProgress.setVisibility(View.VISIBLE);
+                        mButtonSave.setClickable(false);
+                        updatePromo();
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -162,13 +186,21 @@ public class EditPromo extends AppCompatActivity {
         });
     }
 
-    private boolean validate() {
+    private boolean validate() throws ParseException {
         rCallDescription = mDesc.getEditText().getText().toString();
         rCallValue = mValue.getEditText().getText().toString();
         rCallMax_cut = mMaxCut.getEditText().getText().toString();
         rCallStart_time = mStartDate.getText().toString();
         rCallEnd_time = mEndDate.getText().toString();
 
+        Date start = formatter.parse(rCallStart_time);
+        Date end = formatter.parse(rCallEnd_time);
+
+        if(start.compareTo(end) > 0){
+            helperEndTime.setText("You cant set start Time greater than the end time");
+            helperEndTime.setTextColor(getResources().getColor(R.color.warning));
+            return false;
+        }
         if(rCallDescription.isEmpty()){
             mDesc.setError("Please fill the field");
             return false;

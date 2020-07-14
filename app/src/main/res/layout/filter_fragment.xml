@@ -15,14 +15,14 @@
             app:cornerRadius="3dp"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:backgroundTint="@android:color/white"
-            android:text="Recommend"
+            android:text="recommended"
             android:textSize="7dp"
             android:textColor="@android:color/darker_gray"
             app:iconSize="15dp"
             app:iconTint="@color/bg_recommended"
             app:icon="@drawable/ic_recommend"
             app:iconGravity="start"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="30dp"/>
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnWisata"
