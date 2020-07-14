@@ -101,6 +101,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback {
+    boolean first = false;
+
 
     private BottomSheetBehavior bottomSheetBehavior;
     private List<TourismIndexGet> tourism;
@@ -243,6 +245,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void onMyLocationChange(Location location) {
 
+
                         myLocation=location;
                         lastLocation=new LatLng(location.getLatitude(),location.getLongitude());
                         SharedPreferences.Editor editor = preferences.edit();
@@ -253,7 +256,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                                 lastLocation, 16f);
                         currentLat = location.getLatitude();
                         currentLong = location.getLongitude();
-                        mMap.animateCamera(cameraUpdate);
+                        if(!first){
+                            mMap.animateCamera(cameraUpdate);
+                            first  = true;
+                        }
                     }
                 });
 
