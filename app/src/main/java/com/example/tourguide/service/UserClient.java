@@ -87,7 +87,7 @@ public interface UserClient {
                                         @Part("_method") RequestBody method);
     @FormUrlEncoded
     @POST("promo")
-    Call<JsonResponse> storePromoApi(@Header("Authorization") String token,
+    Call<JsonResponse> storePromoApiM(@Header("Authorization") String token,
                                  @Field("item_id") int item_id,
                                  @Field("value") int value,
                                  @Field("description")String description,

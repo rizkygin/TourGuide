@@ -123,6 +123,7 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
     String max_cut;
 
     boolean warn = false;
+    private String max_cut_add;
     private boolean changeClicked = false;
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     Calendar now = Calendar.getInstance();
@@ -435,17 +436,23 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
 
             return false;
         }
-        if(!warn){
+        while(!warn){
             if(mNormalPrice.getEditText().getText().toString().isEmpty()){
+                max_cut_add = "null";
                 mNormalPrice.setError("Do not include maximum cutting prize ?");
                 mNormalPrice.setBoxStrokeColor(getResources().getColor(R.color.bg_food));
                 mNormalPrice.setErrorTextColor(ColorStateList.valueOf(getResources().getColor(R.color.bg_food)));
                 mProggres.setVisibility(View.GONE);
                 warn = true;
                 mProggres.setVisibility(View.GONE);
+            }else {
+                max_cut_add = mNormalPrice.getEditText().getText().toString();
+                break;
             }
+            mProggres.setVisibility(View.GONE);
             return false;
         }
+
 
         return true;
     }
@@ -466,11 +473,13 @@ public class AddDiscount extends AppCompatActivity implements View.OnClickListen
 
     private void storePromo() {
         Call<JsonResponse> call;
-        if(max_cut == null && warn){
+        Log.d(TAG, "storePromo: " + max_cut);
+        if(max_cut == null){
             call = Api.getClient().storePromoApi("Bearer "+ token,item_id,value,descriptionStorePromo,descriptionStorePromo,mStartDatePromo,mEndDatePromo);
 
-        }else {
-            call = Api.getClient().storePromoApi("Bearer "+ token,item_id,value,descriptionStorePromo,descriptionStorePromo,max_cut,mStartDatePromo,mEndDatePromo);
+        }
+        else {
+            call = Api.getClient().storePromoApiM("Bearer "+ token,item_id,value,descriptionStorePromo,descriptionStorePromo,max_cut,mStartDatePromo,mEndDatePromo);
 
         }
         call.enqueue(new Callback<JsonResponse>() {
